@@ -1,0 +1,26 @@
+﻿using SistemaLeilao.Core.Domain.Entities.Common;
+using System;
+using System.Collections.Generic;
+using System.Text;
+
+namespace SistemaLeilao.Core.Domain.Entities
+{
+    public class Bid : BaseEntity
+    {
+        public decimal Amount { get; set; }
+        public DateTime BidDate { get; set; }
+        public long AuctionId { get; set; }
+        public Auction Auction { get; set; }
+        public long BidderId { get; set; }
+        public Bidder Bidder { get; set; }
+        public Bid() { }
+
+        public Bid(decimal amount, long auctionId, long bidderId)
+        {
+            Amount = amount;
+            AuctionId = auctionId;
+            BidderId = bidderId;
+            BidDate = DateTime.UtcNow;
+        }
+    }
+}
