@@ -4,7 +4,10 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Interfaces;
+using SistemaLeilao.Core.Domain.Interfaces.Repositories;
 using SistemaLeilao.Infrastructure.Persistence.Contexts;
+using SistemaLeilao.Infrastructure.Persistence.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -30,6 +33,10 @@ namespace SistemaLeilao.Infrastructure
         private static void ConfigureDependencies(IServiceCollection services)
         {
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuctionRepository, AuctionRepository>();
+            services.AddScoped<IBidderRepository, BidderRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
         }
         private static void ConfigureJWT(IServiceCollection services, IConfiguration configuration)
         {

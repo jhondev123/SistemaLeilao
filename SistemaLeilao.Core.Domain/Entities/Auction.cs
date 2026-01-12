@@ -20,5 +20,13 @@ namespace SistemaLeilao.Core.Domain.Entities
         public long? BidderWinnerId { get; set; }
         public Bidder? BidderWinner { get; set; }
         public List<Bid> Bids { get; set; }
+
+        public void UpdatePrice(decimal newPrice)
+        {
+            if (newPrice > MinimumIncrement && newPrice > CurrentPrice)
+            {
+                CurrentPrice = newPrice;
+            }
+        }
     }
 }

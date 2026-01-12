@@ -11,7 +11,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-
+	  <Folder Include="Features\Bidder\" />
+	  <Folder Include="Features\Bid\Queries\" />
 	</ItemGroup>
-
+	<ItemGroup>
+		<ProjectReference Include="..\SistemaLeilao.Core.Domain\SistemaLeilao.Core.Domain.csproj" />
+	</ItemGroup>
 </Project>
