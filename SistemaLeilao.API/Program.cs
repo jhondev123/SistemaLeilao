@@ -1,3 +1,5 @@
+using Scalar.AspNetCore;
+using SistemaLeilao.API.Endpoints;
 using SistemaLeilao.Core.Application;
 using SistemaLeilao.Infrastructure;
 
@@ -11,9 +13,13 @@ builder.Services.AddOpenApi();
 
 var app = builder.Build();
 
+app.MapAuctionEndpoints();
+app.MapAuthEndpoints();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
 }
 
 app.UseHttpsRedirection();

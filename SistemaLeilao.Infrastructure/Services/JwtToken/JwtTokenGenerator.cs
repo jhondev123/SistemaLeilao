@@ -8,9 +8,9 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SistemaLeilao.Infrastructure
+namespace SistemaLeilao.Infrastructure.Services.JwtToken
 {
-    public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGenerator
+    public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGeneratorService
     {
         public string GenerateToken(string userId, string email,string userName, IList<string> roles)
         {

@@ -11,7 +11,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Folder Include="Features\Bidder\" />
+	  <Folder Include="Features\Auth\Queries\" />
+	  <Folder Include="Features\Bidder\Commands\" />
+	  <Folder Include="Features\Bidder\Queries\" />
 	  <Folder Include="Features\Bid\Queries\" />
 	</ItemGroup>
 	<ItemGroup>

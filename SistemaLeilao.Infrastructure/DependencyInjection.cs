@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -6,8 +7,11 @@ using Microsoft.IdentityModel.Tokens;
 using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Infrastructure.Indentity;
 using SistemaLeilao.Infrastructure.Persistence.Contexts;
 using SistemaLeilao.Infrastructure.Persistence.Repositories;
+using SistemaLeilao.Infrastructure.Services.Auth;
+using SistemaLeilao.Infrastructure.Services.JwtToken;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,15 +28,45 @@ namespace SistemaLeilao.Infrastructure
                 options.UseNpgsql(connectionString, b =>
                     b.MigrationsAssembly(typeof(PostgresDbContext).Assembly.FullName)));
 
+            ConfigureIdentity(services);
+
             ConfigureJWT(services, configuration);
 
             ConfigureDependencies(services);
 
             return services;
         }
+        private static void ConfigureIdentity(IServiceCollection services)
+        {
+            services.AddIdentity<User, Role>(options =>
+            {
+                options.Password.RequireDigit = false;
+                options.Password.RequiredLength = 6;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequireLowercase = false;
+            })
+            .AddEntityFrameworkStores<PostgresDbContext>()
+            .AddDefaultTokenProviders();
+        }
         private static void ConfigureDependencies(IServiceCollection services)
         {
-            services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+            ConfigureDependenciesServices(services);
+
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IAuctionRepository, AuctionRepository>();
+            services.AddScoped<IBidderRepository, BidderRepository>();
+            services.AddScoped<IBidRepository, BidRepository>();
+
+            ConfigureDependenciesRepositories(services);
+        }
+        private static void ConfigureDependenciesServices(IServiceCollection services)
+        {
+            services.AddScoped<IJwtTokenGeneratorService, JwtTokenGenerator>();
+            services.AddScoped<IAuthService, AuthService>();
+        }
+        private static void ConfigureDependenciesRepositories(IServiceCollection services)
+        {
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<IAuctionRepository, AuctionRepository>();
             services.AddScoped<IBidderRepository, BidderRepository>();
