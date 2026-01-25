@@ -9,7 +9,8 @@ namespace SistemaLeilao.API.Endpoints
         public static void MapAuctionEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup(BaseEndpointPath)
-                           .WithTags("Auctions");
+                           .WithTags("Auctions")
+                           .RequireAuthorization();
 
             group.MapPost("/", CreateAuction);
             //group.MapGet("/{id}", GetAuctionById);

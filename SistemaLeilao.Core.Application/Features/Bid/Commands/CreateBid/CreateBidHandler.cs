@@ -21,7 +21,7 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
             }
 
             Domain.Entities.Bid newBid = new(request.Amount, request.BidderId, request.AuctionId);
-            auction.UpdatePrice(request.Amount);
+            auction.UpdatePrice(request.Amount, request.BidderId);
 
             bidRepository.Add(newBid);
             auctionRepository.Update(auction);

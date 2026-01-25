@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SistemaLeilao.Core.Domain.Entities
 {
-    public class Bidder : BaseEntity
+    public class Bidder : PersonBaseEntity
     {
         public string PerfilName { get; set; }
         public string PhoneNumber { get; set; }

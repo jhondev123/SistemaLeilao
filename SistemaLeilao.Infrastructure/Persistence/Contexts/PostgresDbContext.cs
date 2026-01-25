@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SistemaLeilao.Core.Domain.Entities;
+using SistemaLeilao.Core.Domain.Entities.Common;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Infrastructure.Indentity;
 using System;
@@ -18,6 +19,7 @@ namespace SistemaLeilao.Infrastructure.Persistence.Contexts
         #region [ DBSETS ]
 
         public DbSet<Auction> Auctions { get; set; }
+        public DbSet<Auctioneer> Auctioneers { get; set; }
         public DbSet<Bidder> Bidders { get; set; }
         public DbSet<Bid> Bids { get; set; }
 
@@ -34,6 +36,8 @@ namespace SistemaLeilao.Infrastructure.Persistence.Contexts
             RenameIndetityTables(modelBuilder);
 
             ConfiguringBaseEntities(modelBuilder);
+
+            ConfiguringPersonBaseEntities(modelBuilder);
 
             // busca todas as configurações de entidade na assembly, na pasta de Configurations
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(PostgresDbContext).Assembly);
@@ -98,6 +102,39 @@ namespace SistemaLeilao.Infrastructure.Persistence.Contexts
                     .Property(nameof(ISoftDeletable.DeletedAt))
                     .HasColumnType("timestamp with time zone")
                     .IsRequired(false);
+            }
+        }
+
+        private void ConfiguringPersonBaseEntities(ModelBuilder modelBuilder)
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(PersonBaseEntity).IsAssignableFrom(entityType.ClrType) && !entityType.ClrType.IsAbstract)
+                {
+                    modelBuilder.Entity(entityType.ClrType, entity =>
+                    {
+                        entity.Property(nameof(PersonBaseEntity.Name))
+                            .IsRequired()
+                            .HasMaxLength(150);
+
+                        entity.Property(nameof(PersonBaseEntity.Email))
+                            .IsRequired()
+                            .HasMaxLength(255);
+
+                        entity.Property(nameof(PersonBaseEntity.PhoneNumber))
+                            .HasMaxLength(20)
+                            .IsRequired(false);
+
+
+                        entity.HasOne(typeof(User))
+                            .WithOne()
+                            .HasForeignKey(entityType.ClrType, nameof(PersonBaseEntity.UserId))
+                            .OnDelete(DeleteBehavior.Cascade);
+
+                        entity.HasIndex(nameof(PersonBaseEntity.UserId))
+                            .IsUnique();
+                    });
+                }
             }
         }
 

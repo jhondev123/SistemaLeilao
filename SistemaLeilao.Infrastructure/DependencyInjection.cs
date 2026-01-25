@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
@@ -113,7 +114,23 @@ namespace SistemaLeilao.Infrastructure
             });
 
             services.AddAuthorization();
+        }
+        private static void ConfigureAuthorization(IServiceCollection services)
+        {
+            services.AddAuthorization(options =>
+            {
+                // Política para administradores totais
+                options.AddPolicy(AuthorizationPolicies.AdminOnly, policy =>
+                    policy.RequireRole("Admin"));
 
+                // Política para quem pode gerenciar leilões (Admin ou Leiloeiro)
+                options.AddPolicy(AuthorizationPolicies.AuctioneerOnly, policy =>
+                    policy.RequireRole("Admin", "Auctioneer"));
+
+                // Política para clientes/licitantes
+                options.AddPolicy(AuthorizationPolicies.BidderOnly, policy =>
+                    policy.RequireRole("Bidder", "Admin"));
+            });
         }
     }
 }
