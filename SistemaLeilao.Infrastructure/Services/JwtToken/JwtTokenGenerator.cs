@@ -12,19 +12,19 @@ namespace SistemaLeilao.Infrastructure.Services.JwtToken
 {
     public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGeneratorService
     {
-        public string GenerateToken(string userId, string email,string userName, IList<string> roles)
+        public string GenerateToken(string userId, string email, string userName, IList<string> roles)
         {
             var secret = configuration["JwtSettings:Secret"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var claims = new List<Claim>
-        {
-            new(JwtRegisteredClaimNames.Sub, userId),
-            new(JwtRegisteredClaimNames.Email, email),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-            new("perfil_name", userName)
-        };
+            {
+                new(JwtRegisteredClaimNames.Sub, userId),
+                new(JwtRegisteredClaimNames.Email, email),
+                new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new(JwtRegisteredClaimNames.Name, userName)
+            };
 
             foreach (var role in roles)
             {

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Enums;
+using SistemaLeilao.Infrastructure.Extensions;
 using SistemaLeilao.Infrastructure.Indentity;
 using System.Security.Claims;
 
@@ -24,6 +26,8 @@ namespace SistemaLeilao.Infrastructure.Services.Auth
 
             if (!result.Succeeded)
                 return (false, result.Errors.Select(e => e.Description));
+
+            await _userManager.AddToRoleAsync(user, RoleEnum.Bidder.GetDescription());
 
             await _userManager.AddClaimAsync(user, new Claim("FullName", name));
             return (true, Enumerable.Empty<string>());

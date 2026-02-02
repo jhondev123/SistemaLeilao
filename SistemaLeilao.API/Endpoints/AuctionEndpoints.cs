@@ -1,5 +1,6 @@
 ﻿using MediatR;
 using SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Application.Common;
 
 namespace SistemaLeilao.API.Endpoints
 {
@@ -9,10 +10,9 @@ namespace SistemaLeilao.API.Endpoints
         public static void MapAuctionEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup(BaseEndpointPath)
-                           .WithTags("Auctions")
-                           .RequireAuthorization();
+                           .WithTags("Auctions");
 
-            group.MapPost("/", CreateAuction);
+            group.MapPost("/", CreateAuction).RequireAuthorization(AuthorizationPolicies.AuctioneerOnly);
             //group.MapGet("/{id}", GetAuctionById);
         }
         private static async Task<IResult> CreateAuction(CreateAuctionCommand command, IMediator mediator)

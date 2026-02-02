@@ -8,6 +8,6 @@ namespace SistemaLeilao.Core.Application.Common
     {
         public const string AdminOnly = "AdminOnly";
         public const string AuctioneerOnly = "AuctioneerOnly";
-        public const string BidderOnly = "ClientOnly";
+        public const string BidderOnly = "BidderOnly";
     }
 }

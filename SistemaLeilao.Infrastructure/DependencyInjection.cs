@@ -35,6 +35,8 @@ namespace SistemaLeilao.Infrastructure
 
             ConfigureDependencies(services);
 
+            ConfigureAuthorization(services);
+
             return services;
         }
         private static void ConfigureIdentity(IServiceCollection services)
@@ -53,11 +55,6 @@ namespace SistemaLeilao.Infrastructure
         private static void ConfigureDependencies(IServiceCollection services)
         {
             ConfigureDependenciesServices(services);
-
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<IAuctionRepository, AuctionRepository>();
-            services.AddScoped<IBidderRepository, BidderRepository>();
-            services.AddScoped<IBidRepository, BidRepository>();
 
             ConfigureDependenciesRepositories(services);
         }
