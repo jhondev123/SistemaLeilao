@@ -16,7 +16,7 @@ namespace SistemaLeilao.Core.Application.Features.Auth.Commands.RegisterUser
         }
         public async Task<Result> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
         {
-            var (succeeded, errors) = await authService.RegisterAsync(request.Name, request.Email, request.Password);
+            var (succeeded, errors) = await authService.RegisterAsync(request.Name, request.Email, request.Password, request.WantToBeAuctioneer);
 
             if (!succeeded)
                 return Result.Failure(errors);

@@ -19,7 +19,7 @@ namespace SistemaLeilao.Infrastructure.Services.Auth
             this.tokenService = tokenService;
         }
 
-        public async Task<(bool Succeeded, IEnumerable<string> Errors)> RegisterAsync(string name, string email, string password)
+        public async Task<(bool Succeeded, IEnumerable<string> Errors)> RegisterAsync(string name, string email, string password, bool wantToBeAuctioneer = false)
         {
             var user = new User { UserName = email, Email = email };
             var result = await _userManager.CreateAsync(user, password);
@@ -28,6 +28,11 @@ namespace SistemaLeilao.Infrastructure.Services.Auth
                 return (false, result.Errors.Select(e => e.Description));
 
             await _userManager.AddToRoleAsync(user, RoleEnum.Bidder.GetDescription());
+
+            if (wantToBeAuctioneer)
+            {
+                await _userManager.AddToRoleAsync(user, RoleEnum.Auctioneer.GetDescription());
+            }
 
             await _userManager.AddClaimAsync(user, new Claim("FullName", name));
             return (true, Enumerable.Empty<string>());
@@ -47,5 +52,18 @@ namespace SistemaLeilao.Infrastructure.Services.Auth
             return (true, token);
         }
 
+        public async Task<(bool Succeeded, IEnumerable<string> Errors)> CreateUserAsync(string name, string email, string password, string roleName)
+        {
+            var user = new User { UserName = email, Email = email };
+            var result = await _userManager.CreateAsync(user, password);
+
+            if (!result.Succeeded)
+                return (false, result.Errors.Select(e => e.Description));
+
+            await _userManager.AddToRoleAsync(user, roleName);
+          
+            await _userManager.AddClaimAsync(user, new Claim("FullName", name));
+            return (true, Enumerable.Empty<string>());
+        }
     }
 }

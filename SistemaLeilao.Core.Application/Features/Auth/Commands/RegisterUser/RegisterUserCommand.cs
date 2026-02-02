@@ -6,6 +6,6 @@ using System.Text;
 
 namespace SistemaLeilao.Core.Application.Features.Auth.Commands.RegisterUser
 {
-    public record RegisterUserCommand(string Name,string Email, string Password)
+    public record RegisterUserCommand(string Name,string Email, string Password, bool WantToBeAuctioneer = false)
     : IRequest<Result>;
 }

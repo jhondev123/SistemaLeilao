@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction;
 using SistemaLeilao.Core.Application.Common;
+using SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser;
 
 namespace SistemaLeilao.API.Endpoints
 {
@@ -16,7 +17,7 @@ namespace SistemaLeilao.API.Endpoints
 
             group.MapPost("/user/create", CreateUser);
         }
-        private static async Task<IResult> CreateUser(CreateAuctionCommand command, IMediator mediator)
+        private static async Task<IResult> CreateUser(CreateUserCommand command, IMediator mediator)
         {
             var result = await mediator.Send(command);
             return Results.Created($"{BaseEndpointPath}{result}", result);
