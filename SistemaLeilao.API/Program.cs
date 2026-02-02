@@ -34,6 +34,7 @@ try
 
     app.MapAuctionEndpoints();
     app.MapAuthEndpoints();
+    app.MapAdminEndpoints();
 
     if (app.Environment.IsDevelopment())
     {

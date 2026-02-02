@@ -1,6 +1,9 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using FluentValidation;
+using Microsoft.Extensions.DependencyInjection;
+using SistemaLeilao.Core.Application.Common;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 
 namespace SistemaLeilao.Core.Application
@@ -9,10 +12,12 @@ namespace SistemaLeilao.Core.Application
     {
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
-            // Configura o MediatR para procurar Handlers no assembly onde esta classe está
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
             services.AddMediatR(cfg =>
             {
-                cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly);
+                cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
+                cfg.AddOpenBehavior(typeof(ValidationBehavior<,>));
             });
 
             return services;
