@@ -37,17 +37,39 @@ try
 
     if (app.Environment.IsDevelopment())
     {
+        Log.Information("Executando configurações para o ambiente de desenvolvimento...");
+
+        Log.Information("Configurando recursos da API...");
+
         app.MapOpenApi();
         app.MapScalarApiReference();
 
+        Log.Information("Configurando banco de dados...");
         await app.ApplyMigrations();
     }
 
+    Log.Information("Configurando Https");
     app.UseHttpsRedirection();
+    Log.Information("Configurando Authentication");
     app.UseAuthentication();
+    Log.Information("Configurando Authorization");
     app.UseAuthorization();
 
-    app.Run();
+    await app.StartAsync();
+
+    var serverAddresses = string.Join(", ", app.Urls);
+
+    if (string.IsNullOrEmpty(serverAddresses))
+    {
+        Log.Information("Aplicação em funcionamento (Endereços gerenciados pelo Host/Kestrel)");
+    }
+    else
+    {
+        Log.Information("Sistema de Leilão pronto e ouvindo em: {Addresses}", serverAddresses);
+    }
+
+    Log.Information("Aplicação em funcionamento...");
+    await app.WaitForShutdownAsync();
 }
 catch (Exception ex)
 {

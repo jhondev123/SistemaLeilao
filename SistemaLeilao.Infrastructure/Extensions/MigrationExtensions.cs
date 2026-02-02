@@ -15,20 +15,25 @@ namespace SistemaLeilao.Infrastructure.Extensions
     {
         public static async Task ApplyMigrations(this IHost app)
         {
+
             using var scope = app.Services.CreateScope();
             var services = scope.ServiceProvider;
+            var logger = services.GetRequiredService<ILogger<PostgresDbContext>>();
+
             var configuration = services.GetRequiredService<IConfiguration>();
 
             try
             {
+
                 var context = services.GetRequiredService<PostgresDbContext>();
+                logger.LogInformation("Rodando as migrations do banco de dados");
                 await context.Database.MigrateAsync();
 
+                logger.LogInformation("Rodando o IdentitySeeder");
                 await IdentitySeeder.SeedRolesAndAdminAsync(services, configuration);
             }
             catch (Exception ex)
             {
-                var logger = services.GetRequiredService<ILogger>();
                 logger.LogError(ex, "Ocorreu um erro durante a migração ou seeding do banco.");
                 throw;
             }

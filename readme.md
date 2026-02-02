@@ -19,3 +19,7 @@ Testes Unitários e de Integração, Observabilidade com Prometheus e Grafana (o
 ➡️ Escala e resiliência sem downtime
 
 Esse tipo de projeto vai demonstrar sua maturidade técnica, principalmente pelas decisões arquiteturais que exige.
+
+URLS
+
+- SCALAR https://localhost:7199/scalar/v1
