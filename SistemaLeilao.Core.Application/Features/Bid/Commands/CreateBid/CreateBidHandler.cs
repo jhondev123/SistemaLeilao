@@ -1,23 +1,29 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
+using SistemaLeilao.Core.Application.Common;
+using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Domain.Interfaces;
+using SistemaLeilao.Core.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using SistemaLeilao.Core.Domain.Interfaces.Repositories;
-using SistemaLeilao.Core.Domain.Interfaces;
 
 namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
 {
     public class CreateBidHandler(
         IBidRepository bidRepository,
         IAuctionRepository auctionRepository,
-        IUnitOfWork unitOfWork) : IRequestHandler<CreateBidCommand, bool>
+        IUnitOfWork unitOfWork,
+        ILogger<CreateBidHandler> logger) : IRequestHandler<CreateBidCommand, Result>
     {
-        public async Task<bool> Handle(CreateBidCommand request, CancellationToken ct)
+        public async Task<Result> Handle(CreateBidCommand request, CancellationToken ct)
         {
+            logger.LogInformation("Iniciando criação de lance.");
             Domain.Entities.Auction? auction = await auctionRepository.GetByIdAsync(request.AuctionId);
-            if(auction is null)
+            if (auction is null)
             {
-                throw new KeyNotFoundException("Auction not found.");
+                logger.LogWarning("Leilão com ID {AuctionId} não encontrado.", request.AuctionId);
+                return Result.Failure("Leilão não encontrado.");
             }
 
             Domain.Entities.Bid newBid = new(request.Amount, request.BidderId, request.AuctionId);
@@ -28,7 +34,14 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
 
             var result = await unitOfWork.CommitAsync(ct);
 
-            return result > 0;
+            if (result > 0)
+            {
+                logger.LogInformation("Lance criado com sucesso para o leilão ID {AuctionId}.", request.AuctionId);
+                return Result.Success("Lance criado com sucesso.");
+            }
+            logger.LogError("Erro ao criar lance para o leilão ID {AuctionId}.", request.AuctionId);
+            return Result.Failure("Erro ao criar lance.");
+
         }
     }
 }

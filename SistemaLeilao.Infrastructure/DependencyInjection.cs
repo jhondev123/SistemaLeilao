@@ -69,6 +69,7 @@ namespace SistemaLeilao.Infrastructure
             services.AddScoped<IAuctionRepository, AuctionRepository>();
             services.AddScoped<IBidderRepository, BidderRepository>();
             services.AddScoped<IBidRepository, BidRepository>();
+            services.AddScoped<IAuctioneerRepository, AuctioneerRepository>();
         }
         private static void ConfigureJWT(IServiceCollection services, IConfiguration configuration)
         {

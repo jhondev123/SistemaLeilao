@@ -25,6 +25,31 @@ namespace SistemaLeilao.Core.Domain.Entities
 
         public List<Bid> Bids { get; set; } = new();
 
+        public Auction() { }
+        public Auction(
+            string title,
+            long auctioneerId, 
+            decimal startingPrice, 
+            decimal currentPrice, 
+            DateTime startDate, 
+            DateTime endDate, 
+            string? description, 
+            byte[]? image, 
+            decimal minimumIncrement, 
+            AuctionStatus status)
+        {
+            Title = title;
+            AuctioneerId = auctioneerId;
+            StartingPrice = startingPrice;
+            CurrentPrice = currentPrice;
+            StartDate = startDate;
+            EndDate = endDate;
+            Description = description;
+            Image = image;
+            MinimumIncrement = minimumIncrement;
+            Status = status;
+        }
+
         public bool CanPlaceBid(decimal bidAmount)
         {
             if (Status != AuctionStatus.OPEN) return false;

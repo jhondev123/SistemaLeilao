@@ -6,8 +6,9 @@ namespace SistemaLeilao.Core.Domain.Enums
 {
     public enum AuctionStatus
     {
-        OPEN = 1,
-        CLOSED = 2,
-        AWAITING_PAYMENT = 3,
+        AWAITING_START = 1,
+        OPEN = 2,
+        CLOSED = 3,
+        AWAITING_PAYMENT = 4,
     }
 }
