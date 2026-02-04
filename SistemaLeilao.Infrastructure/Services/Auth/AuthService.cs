@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SistemaLeilao.Core.Application.Common.Extensions;
 using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Enums;
 using SistemaLeilao.Infrastructure.Extensions;
@@ -52,18 +53,18 @@ namespace SistemaLeilao.Infrastructure.Services.Auth
             return (true, token);
         }
 
-        public async Task<(bool Succeeded, IEnumerable<string> Errors)> CreateUserAsync(string name, string email, string password, string roleName)
+        public async Task<(bool Succeeded, IEnumerable<string> Errors, long? UserId)> CreateUserAsync(string name, string email, string password, string roleName)
         {
             var user = new User { UserName = email, Email = email };
             var result = await _userManager.CreateAsync(user, password);
 
             if (!result.Succeeded)
-                return (false, result.Errors.Select(e => e.Description));
+                return (false, result.Errors.Select(e => e.Description),null);
 
             await _userManager.AddToRoleAsync(user, roleName);
           
             await _userManager.AddClaimAsync(user, new Claim("FullName", name));
-            return (true, Enumerable.Empty<string>());
+            return (true, Enumerable.Empty<string>(),user.Id);
         }
     }
 }

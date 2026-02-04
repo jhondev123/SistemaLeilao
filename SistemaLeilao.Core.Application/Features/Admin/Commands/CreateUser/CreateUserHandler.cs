@@ -1,29 +1,56 @@
 ﻿using MediatR;
+using Microsoft.Extensions.Logging;
 using SistemaLeilao.Core.Application.Common;
+using SistemaLeilao.Core.Application.Common.Extensions;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.LoginUser;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.RegisterUser;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Entities;
+using SistemaLeilao.Core.Domain.Enums;
+using SistemaLeilao.Core.Domain.Interfaces;
+using SistemaLeilao.Core.Domain.Interfaces.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Text;
-
 namespace SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser
 {
 
-    public class CreateUserHandler : IRequestHandler<CreateUserCommand, Result>
+    public class CreateUserHandler(
+        IUnitOfWork unitOfWork,
+        IAuthService _authService, 
+        IAuctioneerRepository _auctioneerRepository,
+        ILogger<CreateUserHandler> logger
+    ) : IRequestHandler<CreateUserCommand, Result>
     {
-        private readonly IAuthService authService;
-        public CreateUserHandler(IAuthService authService)
-        {
-            this.authService = authService;
-        }
 
-        public async Task<Result> Handle(CreateUserCommand request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(CreateUserCommand request, CancellationToken ct)
         {
-            var (succeeded, errors) = await authService.CreateUserAsync(request.Name, request.Email, request.Password, request.Role);
+            logger.LogInformation("Iniciando criação de usuário com email: {Email}", request.Email);
+            var (succeeded, errors, userId) = await _authService.CreateUserAsync(request.Name, request.Email, request.Password, request.Role);
             if (!succeeded)
+            {
+                logger.LogWarning("Falha ao criar usuário com email: {Email}. Erros: {Errors}", request.Email, string.Join(", ", errors));
                 return Result.Failure(errors);
-            return Result.Success("Usuário criado com sucesso!");
+            }
+
+            if (request.Role == RoleEnum.Auctioneer.GetDescription())
+            {
+                logger.LogInformation("Criando entidade Auctioneer para o usuário com ID: {UserId}", userId);
+
+                var auctioneer = new Auctioneer(request.Name, request.Email, userId!.Value);
+                _auctioneerRepository.Add(auctioneer);
+            }
+
+            var result = await unitOfWork.CommitAsync(ct);
+
+            if(result > 0)
+            {
+                logger.LogInformation("Usuário com email: {Email} criado com sucesso.", request.Email);
+                return Result.Success("Usuário criado com sucesso!");
+            }
+            logger.LogError("Falha ao salvar alterações no banco de dados para o usuário com email: {Email}", request.Email);
+            return Result.Failure("Falha ao criar usuário.");
+
         }
     }
 }

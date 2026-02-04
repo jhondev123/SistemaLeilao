@@ -12,7 +12,6 @@ using System.Text;
 namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction
 {
     public class CreateAuctionHandler(
-        IBidRepository bidRepository,
         IAuctionRepository auctionRepository,
         IAuctioneerRepository auctioneerRepository,
         IUnitOfWork unitOfWork,

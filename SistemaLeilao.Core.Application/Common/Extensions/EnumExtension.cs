@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Text;
 
-namespace SistemaLeilao.Infrastructure.Extensions
+namespace SistemaLeilao.Core.Application.Common.Extensions
 {
     public static class EnumExtension
     {

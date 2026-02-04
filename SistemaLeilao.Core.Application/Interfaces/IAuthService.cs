@@ -8,6 +8,6 @@ namespace SistemaLeilao.Core.Application.Interfaces
     {
         Task<(bool Succeeded, IEnumerable<string> Errors)> RegisterAsync(string name, string email, string password, bool wantToBeAuctioneer = false);
         Task<(bool Succeeded, string? Token)> LoginAsync(string email, string password);
-        Task<(bool Succeeded, IEnumerable<string> Errors)> CreateUserAsync(string name, string email, string password, string roleName);
+        Task<(bool Succeeded, IEnumerable<string> Errors,long? UserId)> CreateUserAsync(string name, string email, string password, string roleName);
     }
 }

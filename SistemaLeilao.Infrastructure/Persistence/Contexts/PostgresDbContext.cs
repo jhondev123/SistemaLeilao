@@ -62,6 +62,8 @@ namespace SistemaLeilao.Infrastructure.Persistence.Contexts
                 ConfiguringTimestampFields(modelBuilder, entityType);
 
                 ConfiguringSoftDeleteField(modelBuilder, entityType);
+
+                ConfigureDateTimeFields(modelBuilder, entityType);
             }
         }
         private void ApplyQueryFilterSoftDelete(ModelBuilder modelBuilder, IMutableEntityType entityType)
@@ -91,6 +93,18 @@ namespace SistemaLeilao.Infrastructure.Persistence.Contexts
                 modelBuilder.Entity(entityType.ClrType)
                     .Property(nameof(ITimestampEntity.UpdatedAt))
                     .HasColumnType("timestamp with time zone");
+            }
+        }
+        private void ConfigureDateTimeFields(ModelBuilder modelBuilder, IMutableEntityType entityType)
+        {
+            var properties = entityType.GetProperties()
+            .Where(p => p.ClrType == typeof(DateTime) || p.ClrType == typeof(DateTime?));
+
+            foreach (var property in properties)
+            {
+                property.SetValueConverter(new Microsoft.EntityFrameworkCore.Storage.ValueConversion.ValueConverter<DateTime, DateTime>(
+                    v => v.Kind == DateTimeKind.Utc ? v : DateTime.SpecifyKind(v, DateTimeKind.Utc),
+                    v => v));
             }
         }
         private void ConfiguringSoftDeleteField(ModelBuilder modelBuilder, IMutableEntityType entityType)

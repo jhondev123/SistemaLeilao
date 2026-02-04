@@ -67,6 +67,7 @@ try
     else
     {
         Log.Information("Sistema de Leilão pronto e ouvindo em: {Addresses}", serverAddresses);
+        Log.Information("Link do Scalar em: {Addresses}", serverAddresses + "/scalar/v1");
     }
 
     Log.Information("Aplicação em funcionamento...");

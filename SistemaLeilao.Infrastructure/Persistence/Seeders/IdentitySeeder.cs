@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using SistemaLeilao.Core.Application.Common.Extensions;
 using SistemaLeilao.Core.Domain.Enums;
 using SistemaLeilao.Infrastructure.Extensions;
 using SistemaLeilao.Infrastructure.Indentity;
