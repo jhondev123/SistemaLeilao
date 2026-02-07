@@ -6,5 +6,5 @@ using System.Text;
 
 namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
 {
-    public record CreateBidCommand(long AuctionId,long BidderId, decimal Amount) : IRequest<Result>;
+    public record CreateBidCommand(Guid AuctionId, Guid BidderId, decimal Amount) : IRequest<Result<CreateBidResponseDto?>>;
 }

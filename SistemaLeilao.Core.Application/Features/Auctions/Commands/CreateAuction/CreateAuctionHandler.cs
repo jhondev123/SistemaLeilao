@@ -15,22 +15,22 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuctio
         IAuctionRepository auctionRepository,
         IAuctioneerRepository auctioneerRepository,
         IUnitOfWork unitOfWork,
-        ILogger<CreateAuctionHandler> logger) : IRequestHandler<CreateAuctionCommand, Result<Auction?>>
+        ILogger<CreateAuctionHandler> logger) : IRequestHandler<CreateAuctionCommand, Result<CreateAuctionResponseDto?>>
     {
-        public async Task<Result<Auction?>> Handle(CreateAuctionCommand request, CancellationToken ct)
+        public async Task<Result<CreateAuctionResponseDto?>> Handle(CreateAuctionCommand request, CancellationToken ct)
         {
             logger.LogInformation("Iniciando criação de leilão.");
 
-            var auctioneer = await auctioneerRepository.GetByIdAsync(request.auctioneerId);
+            var auctioneer = await auctioneerRepository.GetByExternalIdAsync(request.auctioneerId);
             if (auctioneer is null)
             {
                 logger.LogWarning("Leiloeiro com ID {AuctioneerId} não encontrado.", request.auctioneerId);
-                return Result<Auction?>.Failure("Leiloeiro não encontrado.");
+                return Result<CreateAuctionResponseDto?>.Failure("Leiloeiro não encontrado.");
             }
 
             Auction auction = new Auction(
                 request.Title,
-                request.auctioneerId,
+                auctioneer.Id,
                 request.StartingPrice,
                 request.StartingPrice,
                 request.StartDate,
@@ -47,10 +47,10 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuctio
             if(result > 0)
             {
                 logger.LogInformation("Leilão criado com sucesso. ID do Leilão: {AuctionId}", auction.Id);
-                return Result<Auction?>.Success(auction, "Leilão criado com sucesso.");
+                return Result<CreateAuctionResponseDto?>.Success((CreateAuctionResponseDto)auction, "Leilão criado com sucesso.");
             }
             logger.LogError("Erro ao criar leilão.");
-            return Result<Auction?>.Failure("Erro ao criar leilão.");
+            return Result<CreateAuctionResponseDto?>.Failure("Erro ao criar leilão.");
         }
     }
 }

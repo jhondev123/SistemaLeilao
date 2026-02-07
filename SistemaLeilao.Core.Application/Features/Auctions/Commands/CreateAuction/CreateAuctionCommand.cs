@@ -1,12 +1,13 @@
 ﻿using MediatR;
 using SistemaLeilao.Core.Application.Common;
+using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
 using SistemaLeilao.Core.Domain.Entities;
 
 namespace SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction
 {
     public record CreateAuctionCommand(
         string Title, 
-        long auctioneerId,
+        Guid auctioneerId,
         decimal StartingPrice, 
         DateTime StartDate, 
         DateTime EndDate,
@@ -14,5 +15,5 @@ namespace SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAu
         byte[]? Image,
         decimal MinimumIncrement
         )
-        : IRequest<Result<Auction?>>;
+        : IRequest<Result<CreateAuctionResponseDto?>>;
 }

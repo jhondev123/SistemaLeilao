@@ -12,22 +12,37 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
 {
     public class CreateBidHandler(
         IBidRepository bidRepository,
+        IBidderRepository bidderRepository,
         IAuctionRepository auctionRepository,
         IUnitOfWork unitOfWork,
-        ILogger<CreateBidHandler> logger) : IRequestHandler<CreateBidCommand, Result>
+        ILogger<CreateBidHandler> logger) : IRequestHandler<CreateBidCommand, Result<CreateBidResponseDto?>>
     {
-        public async Task<Result> Handle(CreateBidCommand request, CancellationToken ct)
+        public async Task<Result<CreateBidResponseDto?>> Handle(CreateBidCommand request, CancellationToken ct)
         {
             logger.LogInformation("Iniciando criação de lance.");
-            Domain.Entities.Auction? auction = await auctionRepository.GetByIdAsync(request.AuctionId);
+            
+            Domain.Entities.Auction? auction = await auctionRepository.GetByExternalIdAsync(request.AuctionId);
             if (auction is null)
             {
                 logger.LogWarning("Leilão com ID {AuctionId} não encontrado.", request.AuctionId);
-                return Result.Failure("Leilão não encontrado.");
+                return Result<CreateBidResponseDto?>.Failure("Leilão não encontrado.");
             }
 
-            Domain.Entities.Bid newBid = new(request.Amount, request.BidderId, request.AuctionId);
-            auction.UpdatePrice(request.Amount, request.BidderId);
+            Domain.Entities.Bidder? bidder = await bidderRepository.GetByExternalIdAsync(request.BidderId);
+            if (bidder is null)
+            {
+                logger.LogWarning("Licitante com ID {BidderId} não encontrado.", request.BidderId);
+                return Result<CreateBidResponseDto?>.Failure("Licitante não encontrado.");
+            }
+
+            Domain.Entities.Bid newBid = new(request.Amount, bidder.Id, auction.Id);
+
+            var (successApplyNewBid,errorMessageApplyNewBid) = auction.ApplyNewBid(request.Amount, bidder.Id);
+            if (!successApplyNewBid)
+            {
+                logger.LogWarning("Falha ao aplicar novo lance: {ErrorMessage}", errorMessageApplyNewBid);
+                return Result<CreateBidResponseDto?>.Failure(errorMessageApplyNewBid);
+            }
 
             bidRepository.Add(newBid);
             auctionRepository.Update(auction);
@@ -37,10 +52,10 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
             if (result > 0)
             {
                 logger.LogInformation("Lance criado com sucesso para o leilão ID {AuctionId}.", request.AuctionId);
-                return Result.Success("Lance criado com sucesso.");
+                return Result<CreateBidResponseDto?>.Success(CreateBidResponseDto.EntityToDto(newBid), "Lance criado com sucesso.");
             }
             logger.LogError("Erro ao criar lance para o leilão ID {AuctionId}.", request.AuctionId);
-            return Result.Failure("Erro ao criar lance.");
+            return Result<CreateBidResponseDto?>.Failure("Erro ao criar lance.");
 
         }
     }

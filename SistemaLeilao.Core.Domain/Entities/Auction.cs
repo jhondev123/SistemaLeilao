@@ -12,11 +12,11 @@ namespace SistemaLeilao.Core.Domain.Entities
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public decimal StartingPrice { get; set; }
-        public decimal CurrentPrice { get; set; }
+        public decimal CurrentPrice { get; private set; }
         public decimal MinimumIncrement { get; set; }
 
         // Vencedor
-        public long? BidderWinnerId { get; set; }
+        public long? BidderWinnerId { get; private set; }
         public Bidder? BidderWinner { get; set; }
 
         // Criador
@@ -28,14 +28,14 @@ namespace SistemaLeilao.Core.Domain.Entities
         public Auction() { }
         public Auction(
             string title,
-            long auctioneerId, 
-            decimal startingPrice, 
-            decimal currentPrice, 
-            DateTime startDate, 
-            DateTime endDate, 
-            string? description, 
-            byte[]? image, 
-            decimal minimumIncrement, 
+            long auctioneerId,
+            decimal startingPrice,
+            decimal currentPrice,
+            DateTime startDate,
+            DateTime endDate,
+            string? description,
+            byte[]? image,
+            decimal minimumIncrement,
             AuctionStatus status)
         {
             Title = title;
@@ -50,22 +50,36 @@ namespace SistemaLeilao.Core.Domain.Entities
             Status = status;
         }
 
-        public bool CanPlaceBid(decimal bidAmount)
+        public (bool success, string errorMessage) CanPlaceBid(decimal bidAmount)
         {
-            if (Status != AuctionStatus.OPEN) return false;
-            if (DateTime.UtcNow > EndDate) return false;
+            if (Status != AuctionStatus.OPEN)
+            {
+                return (false, "O leilão não está aberto para lances.");
+            }
 
-            // O lance deve ser maior que o preço atual + o incremento mínimo
-            return bidAmount >= (CurrentPrice + MinimumIncrement);
+            if (DateTime.UtcNow > EndDate)
+            {
+                return (false, "O leilão já terminou.");
+            }
+            if(bidAmount < (CurrentPrice + MinimumIncrement))
+            {
+                return (false, $"O lance deve ser pelo menos {MinimumIncrement:C} maior que o preço atual.");
+            }
+            return (true, string.Empty);
         }
 
-        public void UpdatePrice(decimal newPrice, long bidderId)
+        public (bool success, string errorMessage) ApplyNewBid(decimal newPrice, long bidderId)
         {
-            if (CanPlaceBid(newPrice))
+            var (canPlace, error) = CanPlaceBid(newPrice);
+
+            if (!canPlace)
             {
-                CurrentPrice = newPrice;
-                BidderWinnerId = bidderId;
+                return (false, error);
             }
+            CurrentPrice = newPrice;
+            BidderWinnerId = bidderId;
+
+            return (true, string.Empty);
         }
     }
 }
