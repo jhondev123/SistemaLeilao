@@ -1,13 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SistemaLeilao.Core.Application.Common;
+using SistemaLeilao.Core.Application.Features.Bid.Consumers;
 using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Infrastructure.BackgroundServices;
 using SistemaLeilao.Infrastructure.Indentity;
 using SistemaLeilao.Infrastructure.Persistence.Contexts;
 using SistemaLeilao.Infrastructure.Persistence.Repositories;
@@ -36,6 +39,8 @@ namespace SistemaLeilao.Infrastructure
             ConfigureDependencies(services);
 
             ConfigureAuthorization(services);
+
+            ConfigureBackgroundServices(services);
 
             return services;
         }
@@ -129,6 +134,36 @@ namespace SistemaLeilao.Infrastructure
                 options.AddPolicy(AuthorizationPolicies.BidderOnly, policy =>
                     policy.RequireRole("Bidder", "Admin"));
             });
+        }
+        public static IServiceCollection AddMessaging(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddMassTransit(x =>
+            {
+                // 1. Adiciona automaticamente todos os consumidores do assembly onde está o BidPlacedConsumer
+                x.AddConsumers(typeof(BidPlacedConsumer).Assembly);
+
+                x.UsingRabbitMq((context, cfg) =>
+                {
+                    // 2. Configura o Host (pegando do appsettings.json)
+                    cfg.Host(configuration.GetConnectionString("RabbitMQ"), h =>
+                    {
+                        h.Username("guest");
+                        h.Password("guest");
+                    });
+
+                    // 3. Configura as filas automaticamente seguindo o padrão do MassTransit
+                    cfg.ConfigureEndpoints(context);
+
+                    // 4. Política de Retry Global para erros de concorrência (Lock Otimista)
+                    cfg.UseMessageRetry(r => r.Interval(3, TimeSpan.FromMilliseconds(200)));
+                });
+            });
+
+            return services;
+        }
+        private static void ConfigureBackgroundServices(IServiceCollection services)
+        {
+            services.AddHostedService<AuctionStatusWorker>();
         }
     }
 }

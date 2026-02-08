@@ -28,11 +28,14 @@ try
 
     builder.Services.AddOpenApi();
 
+    builder.Services.AddMessaging(builder.Configuration);
+
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
 
     app.MapAuctionEndpoints();
+    app.MapBidEndpoints();
     app.MapAuthEndpoints();
     app.MapAdminEndpoints();
 

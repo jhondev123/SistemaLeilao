@@ -9,7 +9,7 @@ namespace SistemaLeilao.API.Endpoints
     {
         private static string BaseEndpointPath = "/api/bids";
 
-        public static void MapAuctionEndpoints(this IEndpointRouteBuilder app)
+        public static void MapBidEndpoints(this IEndpointRouteBuilder app)
         {
             var group = app.MapGroup(BaseEndpointPath)
                            .WithTags("Bids");
