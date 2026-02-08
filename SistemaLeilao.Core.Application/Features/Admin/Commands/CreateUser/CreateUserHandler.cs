@@ -19,6 +19,7 @@ namespace SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser
         IUnitOfWork unitOfWork,
         IAuthService _authService, 
         IAuctioneerRepository _auctioneerRepository,
+        IBidderRepository _bidderRepository,
         ILogger<CreateUserHandler> logger
     ) : IRequestHandler<CreateUserCommand, Result>
     {
@@ -39,6 +40,14 @@ namespace SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser
 
                 var auctioneer = new Auctioneer(request.Name, request.Email, userId!.Value);
                 _auctioneerRepository.Add(auctioneer);
+            }
+
+            if(request.Role == RoleEnum.Bidder.GetDescription())
+            {
+                logger.LogInformation("Criando entidade Bidder para o usuário com ID: {UserId}", userId);
+                var bidder = new Bidder(request.Name, userId!.Value);
+                _bidderRepository.Add(bidder);
+
             }
 
             var result = await unitOfWork.CommitAsync(ct);

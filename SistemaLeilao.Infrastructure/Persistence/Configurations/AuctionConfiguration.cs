@@ -50,16 +50,22 @@ namespace SistemaLeilao.Infrastructure.Persistence.Configurations
                 .HasColumnType("decimal(18,2)")
                 .IsRequired();
 
+            builder.HasOne(e => e.BidderWinner)
+                    .WithMany()
+                    .HasForeignKey(e => e.BidderWinnerId)
+                    .OnDelete(DeleteBehavior.Restrict)
+                    .IsRequired(false);
+
+            builder.HasOne(e => e.Auctioneer)
+                .WithMany()
+                .HasForeignKey(e => e.AuctioneerId)
+                .OnDelete(DeleteBehavior.Restrict)
+                .IsRequired();
+
             builder.HasMany(e => e.Bids)
                 .WithOne(e => e.Auction)
                 .HasForeignKey(e => e.AuctionId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne(e => e.BidderWinner)
-                .WithMany()
-                .HasForeignKey(e => e.BidderWinnerId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .IsRequired(false);
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

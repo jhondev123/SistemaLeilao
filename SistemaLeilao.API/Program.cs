@@ -5,6 +5,7 @@ using SistemaLeilao.API.Middlewares;
 using SistemaLeilao.Core.Application;
 using SistemaLeilao.Infrastructure;
 using SistemaLeilao.Infrastructure.Extensions;
+using SistemaLeilao.Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +31,8 @@ try
 
     builder.Services.AddMessaging(builder.Configuration);
 
+    builder.Services.AddSignalR();
+
     var app = builder.Build();
 
     app.UseSerilogRequestLogging();
@@ -38,6 +41,8 @@ try
     app.MapBidEndpoints();
     app.MapAuthEndpoints();
     app.MapAdminEndpoints();
+
+    app.MapHub<AuctionHub>("/hubs/auction");
 
     if (app.Environment.IsDevelopment())
     {

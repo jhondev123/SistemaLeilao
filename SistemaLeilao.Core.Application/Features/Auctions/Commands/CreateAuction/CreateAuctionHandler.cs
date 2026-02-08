@@ -21,10 +21,10 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuctio
         {
             logger.LogInformation("Iniciando criação de leilão.");
 
-            var auctioneer = await auctioneerRepository.GetByExternalIdAsync(request.auctioneerId);
+            var auctioneer = await auctioneerRepository.GetByExternalIdAsync(request.AuctioneerId);
             if (auctioneer is null)
             {
-                logger.LogWarning("Leiloeiro com ID {AuctioneerId} não encontrado.", request.auctioneerId);
+                logger.LogWarning("Leiloeiro com ID {AuctioneerId} não encontrado.", request.AuctioneerId);
                 return Result<CreateAuctionResponseDto?>.Failure("Leiloeiro não encontrado.");
             }
 

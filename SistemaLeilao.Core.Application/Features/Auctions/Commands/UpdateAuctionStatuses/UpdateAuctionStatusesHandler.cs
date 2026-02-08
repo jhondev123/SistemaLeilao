@@ -1,5 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using SistemaLeilao.Core.Application.Common.Extensions;
+using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Enums;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
@@ -11,6 +13,7 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.UpdateAuctio
 {
     public class UpdateAuctionStatusesHandler(
         IAuctionRepository auctionRepository,
+        IAuctionNotificationService notificationService,
         IUnitOfWork unitOfWork,
         ILogger<UpdateAuctionStatusesHandler> logger) : IRequestHandler<UpdateAuctionStatusesCommand>
     {
@@ -18,8 +21,8 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.UpdateAuctio
         {
             var now = DateTime.UtcNow;
 
-            // 1. Abrir leilões (AWAITING_START -> OPEN)
-            // Dica: Crie um método no repositório para buscar com esses filtros
+            logger.LogInformation("iniciando processamento dos status dos leilões {now}", now);
+
             var auctionsToOpen = await auctionRepository.GetAuctionsToOpenAsync(now);
             foreach (var auction in auctionsToOpen)
             {
@@ -27,18 +30,26 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.UpdateAuctio
                 logger.LogInformation("Leilão {Id} foi ABERTO.", auction.Id);
             }
 
-            // 2. Encerrar leilões (OPEN -> CLOSED)
             var auctionsToClose = await auctionRepository.GetAuctionsToCloseAsync(now);
             foreach (var auction in auctionsToClose)
             {
                 auction.Status = AuctionStatus.CLOSED;
-                // Aqui você poderia identificar o vencedor final
                 logger.LogInformation("Leilão {Id} foi ENCERRADO.", auction.Id);
             }
 
             if (auctionsToOpen.Any() || auctionsToClose.Any())
             {
                 await unitOfWork.CommitAsync(ct);
+
+                foreach (var auction in auctionsToOpen)
+                {
+                    await notificationService.NotifyAuctionStatusChanged(auction.ExternalId, AuctionStatus.OPEN.GetDescription());
+                }
+
+                foreach (var auction in auctionsToClose)
+                {
+                    await notificationService.NotifyAuctionStatusChanged(auction.ExternalId, AuctionStatus.CLOSED.GetDescription());
+                }
             }
         }
     }

@@ -22,8 +22,8 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitmq_sistema_leilao
     ports:
-      - "5672:5672"   # Porta do protocolo AMQP (sua aplicação usará esta)
-      - "15672:15672" # Porta do Painel de Controle (Management UI)
+      - "5672:5672"
+      - "15672:15672"
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest

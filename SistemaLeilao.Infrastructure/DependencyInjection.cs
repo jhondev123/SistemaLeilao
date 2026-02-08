@@ -16,6 +16,7 @@ using SistemaLeilao.Infrastructure.Persistence.Contexts;
 using SistemaLeilao.Infrastructure.Persistence.Repositories;
 using SistemaLeilao.Infrastructure.Services.Auth;
 using SistemaLeilao.Infrastructure.Services.JwtToken;
+using SistemaLeilao.Infrastructure.Services.Notifications;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -41,6 +42,8 @@ namespace SistemaLeilao.Infrastructure
             ConfigureAuthorization(services);
 
             ConfigureBackgroundServices(services);
+
+            ConfigureHubs(services);
 
             return services;
         }
@@ -164,6 +167,10 @@ namespace SistemaLeilao.Infrastructure
         private static void ConfigureBackgroundServices(IServiceCollection services)
         {
             services.AddHostedService<AuctionStatusWorker>();
+        }
+        private static void ConfigureHubs(IServiceCollection services)
+        {
+            services.AddScoped<IAuctionNotificationService, AuctionNotificationService>();
         }
     }
 }

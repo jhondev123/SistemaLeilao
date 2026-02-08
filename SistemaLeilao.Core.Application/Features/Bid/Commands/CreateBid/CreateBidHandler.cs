@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 using SistemaLeilao.Core.Application.Common;
-using SistemaLeilao.Core.Application.Common.Events;
 using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Application.Features.Bid.Events;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
 using System;

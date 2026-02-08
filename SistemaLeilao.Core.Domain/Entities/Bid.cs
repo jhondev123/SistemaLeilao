@@ -15,11 +15,11 @@ namespace SistemaLeilao.Core.Domain.Entities
         public Bidder Bidder { get; set; }
         public Bid() { }
 
-        public Bid(decimal amount, long auctionId, long bidderId)
+        public Bid(decimal amount, Auction auction, Bidder bidder)
         {
             Amount = amount;
-            AuctionId = auctionId;
-            BidderId = bidderId;
+            Auction = auction;
+            Bidder = bidder;
             BidDate = DateTime.UtcNow;
         }
     }

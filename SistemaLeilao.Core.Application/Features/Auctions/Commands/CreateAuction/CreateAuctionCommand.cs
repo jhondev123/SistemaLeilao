@@ -7,7 +7,7 @@ namespace SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAu
 {
     public record CreateAuctionCommand(
         string Title, 
-        Guid auctioneerId,
+        Guid AuctioneerId,
         decimal StartingPrice, 
         DateTime StartDate, 
         DateTime EndDate,

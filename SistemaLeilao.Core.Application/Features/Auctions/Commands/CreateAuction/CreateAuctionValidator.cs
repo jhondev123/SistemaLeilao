@@ -18,9 +18,9 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuctio
                 .MinimumLength(10).When(x => !string.IsNullOrEmpty(x.Description))
                 .WithMessage("A descrição deve ser mais detalhada (mínimo 10 caracteres).");
 
-            RuleFor(x => x.auctioneerId)
-                .NotEmpty().WithMessage("O ID do leiloeiro é obrigatório.")
-                .GreaterThan(0).WithMessage("ID do leiloeiro inválido.");
+            RuleFor(x => x.AuctioneerId)
+                .NotEmpty()
+                .WithMessage("O ID do leiloeiro é obrigatório e deve ser um identificador válido.");
 
             RuleFor(x => x.StartingPrice)
                 .GreaterThan(0).WithMessage("O preço inicial deve ser um valor positivo.");
