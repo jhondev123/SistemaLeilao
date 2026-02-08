@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SistemaLeilao.Core.Domain.Entities;
+using SistemaLeilao.Infrastructure.Indentity;
 using System;
 using System.Collections.Generic;
 using System.Text;

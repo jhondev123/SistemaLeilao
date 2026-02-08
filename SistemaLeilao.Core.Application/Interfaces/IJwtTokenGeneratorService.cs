@@ -5,6 +5,6 @@ namespace SistemaLeilao.Core.Application.Interfaces
 {
     public interface IJwtTokenGeneratorService
     {
-        string GenerateToken(string userId, string email,string userName, IList<string> roles);
+        string GenerateToken(Guid userExternalId, string email, string userName, IList<string> roles);
     }
 }

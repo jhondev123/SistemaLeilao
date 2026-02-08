@@ -15,16 +15,17 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuctio
         IAuctionRepository auctionRepository,
         IAuctioneerRepository auctioneerRepository,
         IUnitOfWork unitOfWork,
+        IUserContextService userContextService,
         ILogger<CreateAuctionHandler> logger) : IRequestHandler<CreateAuctionCommand, Result<CreateAuctionResponseDto?>>
     {
         public async Task<Result<CreateAuctionResponseDto?>> Handle(CreateAuctionCommand request, CancellationToken ct)
         {
             logger.LogInformation("Iniciando criação de leilão.");
 
-            var auctioneer = await auctioneerRepository.GetByExternalIdAsync(request.AuctioneerId);
+            var auctioneer = await userContextService.GetCurrentAuctioneerAsync();
             if (auctioneer is null)
             {
-                logger.LogWarning("Leiloeiro com ID {AuctioneerId} não encontrado.", request.AuctioneerId);
+                logger.LogWarning("Leiloeiro não encontrado.");
                 return Result<CreateAuctionResponseDto?>.Failure("Leiloeiro não encontrado.");
             }
 

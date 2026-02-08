@@ -9,7 +9,5 @@ namespace SistemaLeilao.Core.Domain.Entities.Common
         public string Name { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public string? PhoneNumber { get; set; }
-
-        public long UserId { get; set; }
     }
 }

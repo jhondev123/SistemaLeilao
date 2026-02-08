@@ -15,9 +15,8 @@ namespace SistemaLeilao.Infrastructure.Services.Notifications
 
         public async Task NotifyBidRejected(Guid bidderId, string message)
         {
-            // Aqui você enviaria para um usuário específico
-            // (Exige mapeamento de ConnectionId ou User Identifier)
-            await hubContext.Clients.User(bidderId.ToString()).SendAsync("Error", message);
+            await hubContext.Clients.User(bidderId.ToString())
+                    .SendAsync("BidRejected", message);
         }
 
         public async Task NotifyAuctionStatusChanged(Guid auctionId, string status)

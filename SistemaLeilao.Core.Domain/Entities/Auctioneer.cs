@@ -11,11 +11,11 @@ namespace SistemaLeilao.Core.Domain.Entities
         public List<Auction> Auctions { get; set; } = new();
         public double Rating { get; set; } = 5.0;
         public Auctioneer() { }
-        public Auctioneer(string name, string email,long userId)
+        public Auctioneer(string name, string email, long userId)
         {
             Name = name;
             Email = email;
-            UserId = userId;
+            Id = userId;
         }
     }
 }

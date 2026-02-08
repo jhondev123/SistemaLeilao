@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,6 +60,8 @@ namespace SistemaLeilao.Infrastructure
             })
             .AddEntityFrameworkStores<PostgresDbContext>()
             .AddDefaultTokenProviders();
+
+            services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
         }
         private static void ConfigureDependencies(IServiceCollection services)
         {
@@ -70,6 +73,7 @@ namespace SistemaLeilao.Infrastructure
         {
             services.AddScoped<IJwtTokenGeneratorService, JwtTokenGenerator>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUserContextService, UserContextService>();
         }
         private static void ConfigureDependenciesRepositories(IServiceCollection services)
         {

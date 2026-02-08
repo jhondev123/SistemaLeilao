@@ -34,11 +34,6 @@ namespace SistemaLeilao.Infrastructure.Persistence.Configurations
                 .WithOne(e => e.Bidder)
                 .HasForeignKey(e => e.BidderId)
                 .OnDelete(DeleteBehavior.Restrict);
-
-            builder.HasOne<User>()
-                .WithOne()
-                .HasForeignKey<Bidder>(e => e.Id)
-                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

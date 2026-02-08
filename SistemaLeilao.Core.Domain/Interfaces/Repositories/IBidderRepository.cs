@@ -7,5 +7,6 @@ namespace SistemaLeilao.Core.Domain.Interfaces.Repositories
 {
     public interface IBidderRepository : IRepository<Bidder>
     {
+        Task<Bidder?> GetByUserExternalIdAsync(Guid userExternalId);
     }
 }

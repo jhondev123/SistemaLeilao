@@ -139,14 +139,10 @@ namespace SistemaLeilao.Infrastructure.Persistence.Contexts
                             .HasMaxLength(20)
                             .IsRequired(false);
 
-
                         entity.HasOne(typeof(User))
-                            .WithOne()
-                            .HasForeignKey(entityType.ClrType, nameof(PersonBaseEntity.UserId))
-                            .OnDelete(DeleteBehavior.Cascade);
-
-                        entity.HasIndex(nameof(PersonBaseEntity.UserId))
-                            .IsUnique();
+                              .WithOne()
+                              .HasForeignKey(entityType.ClrType, nameof(PersonBaseEntity.Id))
+                              .OnDelete(DeleteBehavior.Cascade);
                     });
                 }
             }

@@ -12,7 +12,7 @@ namespace SistemaLeilao.Infrastructure.Services.JwtToken
 {
     public class JwtTokenGenerator(IConfiguration configuration) : IJwtTokenGeneratorService
     {
-        public string GenerateToken(string userId, string email, string userName, IList<string> roles)
+        public string GenerateToken(Guid userExternalId, string email, string userName, IList<string> roles)
         {
             var secret = configuration["JwtSettings:Secret"];
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret!));
@@ -20,10 +20,11 @@ namespace SistemaLeilao.Infrastructure.Services.JwtToken
 
             var claims = new List<Claim>
             {
-                new(JwtRegisteredClaimNames.Sub, userId),
+                new(JwtRegisteredClaimNames.Sub, userExternalId.ToString()),
                 new(JwtRegisteredClaimNames.Email, email),
                 new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new(JwtRegisteredClaimNames.Name, userName)
+                new(JwtRegisteredClaimNames.Name, userName),
+                new(ClaimTypes.NameIdentifier, userExternalId.ToString()),
             };
 
             foreach (var role in roles)

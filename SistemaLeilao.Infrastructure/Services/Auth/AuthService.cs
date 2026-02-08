@@ -49,7 +49,7 @@ namespace SistemaLeilao.Infrastructure.Services.Auth
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            var token = tokenService.GenerateToken(user.Id.ToString(), user.Email ?? "", user.UserName ?? "", roles);
+            var token = tokenService.GenerateToken(user.ExternalId, user.Email ?? "", user.UserName ?? "", roles);
             return (true, token);
         }
 

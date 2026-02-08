@@ -12,9 +12,6 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
             RuleFor(x => x.AuctionId)
                 .NotEmpty().WithMessage("O ID do leilão é obrigatório.");
 
-            RuleFor(x => x.BidderId)
-                .NotEmpty().WithMessage("O ID do licitante é obrigatório.");
-
             RuleFor(x => x.Amount)
                 .GreaterThan(0).WithMessage("O valor do lance deve ser maior que zero.")
                 .Must(HaveValidDecimals).WithMessage("O valor do lance não pode ter mais de duas casas decimais.");

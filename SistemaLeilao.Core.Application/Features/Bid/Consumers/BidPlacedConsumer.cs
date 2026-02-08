@@ -49,7 +49,7 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Consumers
                 logger.LogWarning("Lance de {Amount} rejeitado para o leilão {AuctionId}: {Reason}",
                     request.Amount, request.AuctionId, errorMessage);
 
-                await notificationService.NotifyBidRejected(bidder.ExternalId, errorMessage);
+                await notificationService.NotifyBidRejected(request.UserExternalId, errorMessage);
                 return;
             }
 
@@ -63,7 +63,7 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Consumers
                 await unitOfWork.CommitAsync(ct);
                 logger.LogInformation("Lance de {Amount} confirmado com sucesso!", request.Amount);
 
-                await notificationService.NotifyNewBid(auction.ExternalId, request.Amount, bidder.ExternalId);
+                await notificationService.NotifyNewBid(auction.ExternalId, request.Amount, request.UserExternalId);
             }
             catch (Exception ex)
             {

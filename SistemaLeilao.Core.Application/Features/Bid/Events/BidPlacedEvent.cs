@@ -4,6 +4,6 @@ using System.Text;
 
 namespace SistemaLeilao.Core.Application.Features.Bid.Events
 {
-    public record BidPlacedEvent(Guid AuctionId, Guid BidderId, decimal Amount);
+    public record BidPlacedEvent(Guid AuctionId, Guid BidderId, Guid UserExternalId, decimal Amount);
 
 }

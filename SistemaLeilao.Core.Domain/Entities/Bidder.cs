@@ -19,7 +19,6 @@ namespace SistemaLeilao.Core.Domain.Entities
         public Bidder(string perfilName, long userId)
         {
             PerfilName = perfilName;
-            UserId = userId;
             Id = userId;
         }
     }
