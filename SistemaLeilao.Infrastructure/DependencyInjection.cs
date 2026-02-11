@@ -5,7 +5,14 @@ using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using OpenTelemetry.Logs;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Bid.Consumers;
 using SistemaLeilao.Core.Application.Interfaces;
@@ -45,6 +52,8 @@ namespace SistemaLeilao.Infrastructure
             ConfigureBackgroundServices(services);
 
             ConfigureHubs(services);
+
+            ConfigureObservability(services, configuration);
 
             return services;
         }
@@ -176,5 +185,26 @@ namespace SistemaLeilao.Infrastructure
         {
             services.AddScoped<IAuctionNotificationService, AuctionNotificationService>();
         }
+        private static void ConfigureObservability(this IServiceCollection services, IConfiguration configuration)
+        {
+            var otlpEndpoint = configuration["Otlp:Endpoint"] ?? "http://localhost:4317";
+            var serviceName = "SistemaLeilao.API"; // Nome do seu serviço
+
+
+            services.AddOpenTelemetry()
+                .ConfigureResource(resource => resource.AddService(serviceName))
+                .WithMetrics(metrics => metrics
+                    .AddAspNetCoreInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint)))
+                .WithTracing(tracing => tracing
+                    .AddAspNetCoreInstrumentation()
+                    // Rastreia as queries do Entity Framework para o Postgres
+                    .AddEntityFrameworkCoreInstrumentation()
+                    .AddSource("MassTransit")
+                    .AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint)))
+                .WithLogging(logging => logging
+                    .AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint))); // Agora configurado aqui
+        }        
     }
 }

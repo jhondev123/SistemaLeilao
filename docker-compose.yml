@@ -37,6 +37,57 @@ services:
       timeout: 5s
       retries: 5
 
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus_sistema_leilao
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - dev-network
+    restart: unless-stopped
+
+  loki:
+    image: grafana/loki:latest
+    container_name: loki_sistema_leilao
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+    networks:
+      - dev-network
+    restart: unless-stopped
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana_sistema_leilao
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana_data:/var/lib/grafana
+    networks:
+      - dev-network
+    depends_on:
+      - prometheus
+      - loki
+    restart: unless-stopped
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel_collector_leilao
+    command: ["--config=/etc/otel-collector-config.yaml"]
+    volumes:
+      - ./infra/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+      - "8889:8889"
+    networks:
+      - dev-network
+    restart: unless-stopped
+
 networks:
   dev-network:
     driver: bridge
@@ -44,3 +95,4 @@ networks:
 volumes:
   postgres_data:
   rabbitmq_data:
+  grafana_data:

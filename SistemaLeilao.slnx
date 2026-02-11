@@ -4,6 +4,10 @@
     <File Path="migration.ps1" />
     <File Path="readme.md" />
   </Folder>
+  <Folder Name="/Solution Items/infra/">
+    <File Path="otel-collector-config.yaml" />
+    <File Path="prometheus.yml" />
+  </Folder>
   <Project Path="SistemaLeilao.API/SistemaLeilao.API.csproj" />
   <Project Path="SistemaLeilao.Core.Application/SistemaLeilao.Core.Application.csproj" Id="9a407878-fc4b-4a23-9a13-36a5420d557d" />
   <Project Path="SistemaLeilao.Core.Domain/SistemaLeilao.Core.Domain.csproj" Id="a09e1dd8-0718-4b0e-b5b8-66495f4d341d" />
