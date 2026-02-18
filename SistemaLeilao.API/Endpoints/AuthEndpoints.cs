@@ -1,5 +1,5 @@
 ﻿using MediatR;
-using SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.LoginUser;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.RegisterUser;
 

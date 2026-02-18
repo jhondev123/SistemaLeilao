@@ -3,7 +3,7 @@ using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
 using SistemaLeilao.Core.Domain.Entities;
 
-namespace SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction
+namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction
 {
     public record CreateAuctionCommand(
         string Title, 

@@ -32,6 +32,9 @@ try
     // Middleware de log de requisições HTTP
     app.UseSerilogRequestLogging();
 
+    app.UseAuthentication();
+    app.UseAuthorization();
+
     // HealthCheck ou Global Exception Handler (se necessário)
     app.UseExceptionHandler();
 
@@ -52,8 +55,6 @@ try
     }
 
     app.UseHttpsRedirection();
-    app.UseAuthentication();
-    app.UseAuthorization();
 
     Log.Information("Sistema de Leilão pronto. Iniciando host...");
     app.Run();

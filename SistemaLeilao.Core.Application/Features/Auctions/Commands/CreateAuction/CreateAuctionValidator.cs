@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
 using System;
 using System.Collections.Generic;
 using System.Text;

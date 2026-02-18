@@ -1,4 +1,4 @@
-﻿namespace SistemaLeilao.API.Core.Application.Features.Auctions.Queries.Auctions.GetAuction
+﻿namespace SistemaLeilao.Core.Application.Features.Auctions.Queries.Auctions.GetAuction
 {
     public class GetAuctionQuery
     {

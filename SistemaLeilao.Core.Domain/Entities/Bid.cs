@@ -10,9 +10,9 @@ namespace SistemaLeilao.Core.Domain.Entities
         public decimal Amount { get; set; }
         public DateTime BidDate { get; set; }
         public long AuctionId { get; set; }
-        public Auction Auction { get; set; }
+        public Auction Auction { get; set; } = new Auction();
         public long BidderId { get; set; }
-        public Bidder Bidder { get; set; }
+        public Bidder Bidder { get; set; } = new Bidder();
         public Bid() { }
 
         public Bid(decimal amount, Auction auction, Bidder bidder)

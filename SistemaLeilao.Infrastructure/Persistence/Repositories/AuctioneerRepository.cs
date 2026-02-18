@@ -8,13 +8,16 @@ using System.Text;
 
 namespace SistemaLeilao.Infrastructure.Persistence.Repositories
 {
-    public class AuctioneerRepository(PostgresDbContext context)
-    : BaseRepository<Auctioneer>(context), IAuctioneerRepository
+    public class AuctioneerRepository : BaseRepository<Auctioneer>, IAuctioneerRepository
     {
+        public AuctioneerRepository(PostgresDbContext context) : base(context)
+        {
+        }
+
         public async Task<Auctioneer?> GetByUserExternalIdAsync(Guid userExternalId)
         {
-            return await (from a in context.Auctioneers
-                          join u in context.Users on a.Id equals u.Id
+            return await (from a in _context.Auctioneers
+                          join u in _context.Users on a.Id equals u.Id
                           where u.ExternalId == userExternalId
                           select a)
                               .AsNoTracking()

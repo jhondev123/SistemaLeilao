@@ -18,6 +18,7 @@ using SistemaLeilao.Core.Application.Features.Bid.Consumers;
 using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Core.Domain.Services.Bid;
 using SistemaLeilao.Infrastructure.BackgroundServices;
 using SistemaLeilao.Infrastructure.Indentity;
 using SistemaLeilao.Infrastructure.Persistence.Contexts;
@@ -54,6 +55,8 @@ namespace SistemaLeilao.Infrastructure
             ConfigureHubs(services);
 
             ConfigureObservability(services, configuration);
+
+            ConfigureDomainServices(services);
 
             return services;
         }
@@ -205,6 +208,10 @@ namespace SistemaLeilao.Infrastructure
                     .AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint)))
                 .WithLogging(logging => logging
                     .AddOtlpExporter(opt => opt.Endpoint = new Uri(otlpEndpoint))); // Agora configurado aqui
-        }        
+        }
+        private static void ConfigureDomainServices(IServiceCollection services)
+        {
+            services.AddScoped<BidDomainService>();
+        }
     }
 }

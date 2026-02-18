@@ -1,5 +1,4 @@
 ﻿using MassTransit;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Logging;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid;
@@ -7,6 +6,7 @@ using SistemaLeilao.Core.Application.Features.Bid.Events;
 using SistemaLeilao.Core.Application.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Core.Domain.Services.Bid;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +18,7 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Consumers
         IAuctionRepository auctionRepository,
         IBidderRepository bidderRepository,
         IUnitOfWork unitOfWork,
+        BidDomainService bidDomainService,
         ILogger<BidPlacedConsumer> logger) : IConsumer<BidPlacedEvent>
     {
 
@@ -29,20 +30,17 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Consumers
             logger.LogInformation("Processando lance de {Amount} para o leilão {AuctionId}.", request.Amount, request.AuctionId);
 
             var auction = await auctionRepository.GetByExternalIdAsync(request.AuctionId);
-            if (auction is null)
-            {
-                logger.LogWarning("Leilão {AuctionId} não encontrado. Processamento abortado.", request.AuctionId);
-                return;
-            }
-
             var bidder = await bidderRepository.GetByExternalIdAsync(request.BidderId);
-            if (bidder is null)
+
+            var validationResult = bidDomainService.ValidateBid(auction, bidder, request.Amount);
+
+            if (!validationResult.success)
             {
-                logger.LogWarning("Licitante {BidderId} não encontrado.", request.BidderId);
+                await notificationService.NotifyBidRejected(request.UserExternalId, validationResult.error);
                 return;
             }
 
-            var (success, errorMessage) = auction.ApplyNewBid(request.Amount, bidder.Id);
+            var (success, errorMessage) = auction!.ApplyNewBid(request.Amount, bidder!.Id);
 
             if (!success)
             {

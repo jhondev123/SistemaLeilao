@@ -1,6 +1,5 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
-using SistemaLeilao.API.Core.Application.Features.Auctions.Commands.CreateAuction;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Domain.Entities;
 using SistemaLeilao.Core.Domain.Interfaces;
@@ -13,7 +12,6 @@ namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuctio
 {
     public class CreateAuctionHandler(
         IAuctionRepository auctionRepository,
-        IAuctioneerRepository auctioneerRepository,
         IUnitOfWork unitOfWork,
         IUserContextService userContextService,
         ILogger<CreateAuctionHandler> logger) : IRequestHandler<CreateAuctionCommand, Result<CreateAuctionResponseDto?>>
