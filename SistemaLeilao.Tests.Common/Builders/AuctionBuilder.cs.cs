@@ -23,6 +23,9 @@ namespace SistemaLeilao.Tests.Common.Builders
         public AuctionBuilder WithEndDate(DateTime endDate)
         { _endDate = endDate; return this; }
 
+        public AuctionBuilder WithStartDate(DateTime startDate)
+        { _startDate = startDate; return this; }
+
         public AuctionBuilder WithCurrentPrice(decimal price)
         { _currentPrice = price; return this; }
 

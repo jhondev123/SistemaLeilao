@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SistemaLeilao.Tests.Common.Fixtures
+namespace SistemaLeilao.IntegrationTests.Fixtures
 {
     public class MassTransitFixture
     {

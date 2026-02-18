@@ -1,5 +1,5 @@
-﻿using SistemaLeilao.Tests.Common.Builders;
-using SistemaLeilao.Tests.Common.Fixtures;
+﻿using SistemaLeilao.IntegrationTests.Fixtures;
+using SistemaLeilao.Tests.Common.Builders;
 using System;
 using System.Collections.Generic;
 using System.Text;

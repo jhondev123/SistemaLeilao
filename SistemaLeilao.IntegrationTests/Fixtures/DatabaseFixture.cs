@@ -5,7 +5,7 @@ using SistemaLeilao.Infrastructure.Persistence.Contexts;
 using Testcontainers.PostgreSql;
 using Xunit;
 
-namespace SistemaLeilao.Tests.Common.Fixtures
+namespace SistemaLeilao.IntegrationTests.Fixtures
 {
     public class DatabaseFixture : IAsyncLifetime
     {
