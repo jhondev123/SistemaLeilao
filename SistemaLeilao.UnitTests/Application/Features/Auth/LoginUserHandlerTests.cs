@@ -3,6 +3,8 @@ using Moq;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.LoginUser;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Common;
+using SistemaLeilao.Core.Domain.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 using Xunit;
@@ -36,7 +38,7 @@ public class LoginUserHandlerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Data.Should().Be("token-value");
-        result.Message.Should().Be("Login realizado com sucesso!");
+        result?.Message?.Message.Should().Be(Messages.SuccessLoginSuccessful);
     }
 
     [Fact]
@@ -54,6 +56,6 @@ public class LoginUserHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().ContainSingle(error => error == "E-mail ou senha incorretos.");
+        result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorInvalidEmailOrPassword), Messages.ErrorInvalidEmailOrPassword));
     }
 }

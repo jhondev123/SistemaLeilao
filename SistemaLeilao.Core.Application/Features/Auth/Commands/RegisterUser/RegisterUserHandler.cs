@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Common;
+using SistemaLeilao.Core.Domain.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -21,7 +23,7 @@ namespace SistemaLeilao.Core.Application.Features.Auth.Commands.RegisterUser
             if (!succeeded)
                 return Result.Failure(errors);
 
-            return Result.Success("Usuário criado com sucesso!");
+            return Result.Success(new SuccessMessage(nameof(Messages.SuccessUserCreated), Messages.SuccessUserCreated));
         }
     }
 }

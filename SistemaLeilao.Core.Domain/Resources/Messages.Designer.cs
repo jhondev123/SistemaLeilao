@@ -133,6 +133,24 @@ namespace SistemaLeilao.Core.Domain.Resources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to E-mail ou senha inválidos.
+        /// </summary>
+        public static string ErrorInvalidEmailOrPassword {
+            get {
+                return ResourceManager.GetString("ErrorInvalidEmailOrPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Erro ao criar leilão.
+        /// </summary>
+        public static string ErrorOnCreateAuction {
+            get {
+                return ResourceManager.GetString("ErrorOnCreateAuction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Usuário não autenticado!.
         /// </summary>
         public static string ErrorUserNotAuthenticated {
@@ -142,20 +160,38 @@ namespace SistemaLeilao.Core.Domain.Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Lance enviado para processamento..
+        ///   Looks up a localized string similar to Leilão criado com sucesso.
         /// </summary>
-        public static string SucessBidSentToProcessing {
+        public static string SuccessAuctionCreated {
             get {
-                return ResourceManager.GetString("SucessBidSentToProcessing", resourceCulture);
+                return ResourceManager.GetString("SuccessAuctionCreated", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Usuário criado com sucesso..
+        ///   Looks up a localized string similar to Lance enviado para processamento..
         /// </summary>
-        public static string SucessUserCreated {
+        public static string SuccessBidSentToProcessing {
             get {
-                return ResourceManager.GetString("SucessUserCreated", resourceCulture);
+                return ResourceManager.GetString("SuccessBidSentToProcessing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Login realizado com sucesso.
+        /// </summary>
+        public static string SuccessLoginSuccessful {
+            get {
+                return ResourceManager.GetString("SuccessLoginSuccessful", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Usuário criado com sucesso.
+        /// </summary>
+        public static string SuccessUserCreated {
+            get {
+                return ResourceManager.GetString("SuccessUserCreated", resourceCulture);
             }
         }
     }

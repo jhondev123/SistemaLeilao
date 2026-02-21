@@ -1,6 +1,8 @@
 ﻿using MediatR;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Common;
+using SistemaLeilao.Core.Domain.Resources;
 
 namespace SistemaLeilao.Core.Application.Features.Auth.Commands.LoginUser
 {
@@ -13,10 +15,10 @@ namespace SistemaLeilao.Core.Application.Features.Auth.Commands.LoginUser
 
             if (!succeeded || string.IsNullOrEmpty(token))
             {
-                return Result<string>.Failure("E-mail ou senha incorretos.");
+                return Result<string>.Failure(new ErrorMessage(nameof(Messages.ErrorInvalidEmailOrPassword), Messages.ErrorInvalidEmailOrPassword));
             }
 
-            return Result<string>.Success(token, "Login realizado com sucesso!");
+            return Result<string>.Success(token, new SuccessMessage(nameof(Messages.SuccessLoginSuccessful),Messages.SuccessLoginSuccessful));
         }
     }
 }

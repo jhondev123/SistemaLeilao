@@ -57,7 +57,7 @@ namespace SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser
             if(result > 0)
             {
                 logger.LogInformation("Usuário com email: {Email} criado com sucesso.", request.Email);
-                return Result.Success(new SucessMessage(nameof(Messages.SucessUserCreated),Messages.SucessUserCreated));
+                return Result.Success(new SuccessMessage(nameof(Messages.SuccessUserCreated),Messages.SuccessUserCreated));
             }
             logger.LogError("Falha ao salvar alterações no banco de dados para o usuário com email: {Email}", request.Email);
             return Result.Failure(new ErrorMessage(nameof(Messages.ErrorFailToCreateUser),Messages.ErrorFailToCreateUser));

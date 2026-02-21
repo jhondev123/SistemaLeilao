@@ -49,7 +49,7 @@ namespace SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid
 
             logger.LogInformation("Lance enviado para processamento AuctionId: {AuctionId}, BidderId: {BidderId}, Amount: {Amount}",
                 request.AuctionId, bidder.ExternalId, request.Amount);
-            return Result.Success(new SucessMessage(nameof(Messages.SucessBidSentToProcessing),Messages.SucessBidSentToProcessing));
+            return Result.Success(new SuccessMessage(nameof(Messages.SuccessBidSentToProcessing),Messages.SuccessBidSentToProcessing));
         }
     }
 }

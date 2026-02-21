@@ -5,10 +5,12 @@ using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Common.Extensions;
 using SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Core.Domain.Entities;
 using SistemaLeilao.Core.Domain.Enums;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Core.Domain.Resources;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -65,7 +67,8 @@ namespace SistemaLeilao.UnitTests.Application.Features.Admin
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.Message.Should().Be("Usuário criado com sucesso!");
+            result?.Message?.Message.Should().Be(Messages.SuccessUserCreated);
+            result?.Message?.Code.Should().Be(nameof(Messages.SuccessUserCreated));
             auctioneerRepositoryMock.Verify(repository => repository.Add(It.Is<Auctioneer>(
                 auctioneer => auctioneer.Id == userId && auctioneer.Email == command.Email && auctioneer.Name == command.Name)), Times.Once);
             bidderRepositoryMock.Verify(repository => repository.Add(It.IsAny<Bidder>()), Times.Never);
@@ -95,7 +98,8 @@ namespace SistemaLeilao.UnitTests.Application.Features.Admin
 
             // Assert
             result.IsSuccess.Should().BeTrue();
-            result.Message.Should().Be("Usuário criado com sucesso!");
+            result?.Message?.Message.Should().Be(Messages.SuccessUserCreated);
+            result?.Message?.Code.Should().Be(nameof(Messages.SuccessUserCreated));
             bidderRepositoryMock.Verify(repository => repository.Add(It.Is<Bidder>(
                 bidder => bidder.Id == userId && bidder.PerfilName == command.Name)), Times.Once);
             auctioneerRepositoryMock.Verify(repository => repository.Add(It.IsAny<Auctioneer>()), Times.Never);
@@ -105,7 +109,7 @@ namespace SistemaLeilao.UnitTests.Application.Features.Admin
         public async Task Handle_Should_ReturnFailure_When_AuthServiceFails()
         {
             // Arrange
-            List<string> errors = new List<string> { "Erro ao criar usuário" };
+            List<string> errors = new List<string> { Messages.ErrorFailToCreateUser };
             CreateUserCommand command = new CreateUserCommand(
                 "User",
                 "user@example.com",
@@ -121,7 +125,7 @@ namespace SistemaLeilao.UnitTests.Application.Features.Admin
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Errors.Should().BeEquivalentTo(errors);
+            result.Errors.Should().Contain(x => x.Message == Messages.ErrorFailToCreateUser);
             unitOfWorkMock.Verify(unitOfWork => unitOfWork.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
             bidderRepositoryMock.Verify(repository => repository.Add(It.IsAny<Bidder>()), Times.Never);
             auctioneerRepositoryMock.Verify(repository => repository.Add(It.IsAny<Auctioneer>()), Times.Never);

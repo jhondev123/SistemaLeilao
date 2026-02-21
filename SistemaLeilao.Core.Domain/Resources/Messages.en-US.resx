@@ -141,13 +141,25 @@
   <data name="ErrorFailToCreateUser" xml:space="preserve">
     <value>Não sei inglês</value>
   </data>
+  <data name="ErrorInvalidEmailOrPassword" xml:space="preserve">
+    <value>Não sei inglês</value>
+  </data>
+  <data name="ErrorOnCreateAuction" xml:space="preserve">
+    <value>Não sei inglês</value>
+  </data>
   <data name="ErrorUserNotAuthenticated" xml:space="preserve">
     <value>Não sei inglês</value>
   </data>
-  <data name="SucessBidSentToProcessing" xml:space="preserve">
+  <data name="SuccessUserCreated" xml:space="preserve">
     <value>Não sei inglês</value>
   </data>
-  <data name="SucessUserCreated" xml:space="preserve">
+  <data name="SuccessAuctionCreated" xml:space="preserve">
+    <value>Não sei inglês</value>
+  </data>
+  <data name="SuccessBidSentToProcessing" xml:space="preserve">
+    <value>Não sei inglês</value>
+  </data>
+  <data name="SuccessLoginSuccessful" xml:space="preserve">
     <value>Não sei inglês</value>
   </data>
 </root>

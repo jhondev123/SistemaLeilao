@@ -5,10 +5,12 @@ using Moq;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Bid.Commands.CreateBid;
 using SistemaLeilao.Core.Application.Features.Bid.Events;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Core.Domain.Entities;
 using SistemaLeilao.Core.Domain.Enums;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Core.Domain.Resources;
 using SistemaLeilao.Core.Domain.Services.Bid;
 using SistemaLeilao.Tests.Common.Builders;
 using System;
@@ -76,7 +78,7 @@ public class CreateBidHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Message.Should().Be("Lance enviado para processamento!");
+        result?.Message?.Message.Should().Be(Messages.SuccessBidSentToProcessing);
         publishEndpointMock.Verify(endpoint => endpoint.Publish(
             It.Is<BidPlacedEvent>(evt =>
                 evt.AuctionId == auctionId &&
@@ -103,7 +105,7 @@ public class CreateBidHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().ContainSingle(error => error == "Usuário não autenticado!");
+        result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorUserNotAuthenticated), Messages.ErrorUserNotAuthenticated));
         publishEndpointMock.Verify(endpoint => endpoint.Publish(It.IsAny<BidPlacedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
@@ -132,7 +134,7 @@ public class CreateBidHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().ContainSingle(error => error == "O leilão não está aberto para lances.");
+        result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorAuctionNotOpen), Messages.ErrorAuctionNotOpen));
         publishEndpointMock.Verify(endpoint => endpoint.Publish(It.IsAny<BidPlacedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 }

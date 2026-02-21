@@ -141,13 +141,25 @@
   <data name="ErrorFailToCreateUser" xml:space="preserve">
     <value>Falha ao criar o usuário.</value>
   </data>
+  <data name="ErrorInvalidEmailOrPassword" xml:space="preserve">
+    <value>E-mail ou senha inválidos</value>
+  </data>
+  <data name="ErrorOnCreateAuction" xml:space="preserve">
+    <value>Erro ao criar leilão</value>
+  </data>
   <data name="ErrorUserNotAuthenticated" xml:space="preserve">
     <value>Usuário não autenticado!</value>
   </data>
-  <data name="SucessBidSentToProcessing" xml:space="preserve">
+  <data name="SuccessUserCreated" xml:space="preserve">
+    <value>Usuário criado com sucesso</value>
+  </data>
+  <data name="SuccessAuctionCreated" xml:space="preserve">
+    <value>Leilão criado com sucesso</value>
+  </data>
+  <data name="SuccessBidSentToProcessing" xml:space="preserve">
     <value>Lance enviado para processamento.</value>
   </data>
-  <data name="SucessUserCreated" xml:space="preserve">
-    <value>Usuário criado com sucesso.</value>
+  <data name="SuccessLoginSuccessful" xml:space="preserve">
+    <value>Login realizado com sucesso</value>
   </data>
 </root>

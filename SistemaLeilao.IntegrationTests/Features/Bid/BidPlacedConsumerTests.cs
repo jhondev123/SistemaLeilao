@@ -9,13 +9,7 @@ namespace SistemaLeilao.IntegrationTests.Features.Bid
     [Collection("Database")]
     public class BidPlacedConsumerTests : IAsyncLifetime
     {
-        private readonly DatabaseFixture _fixture;
-
-        public BidPlacedConsumerTests(DatabaseFixture fixture)
-        {
-            _fixture = fixture;
-        }
-
+        private readonly DatabaseFixture _fixture = new DatabaseFixture();
 
         public async ValueTask InitializeAsync() => await _fixture.ResetAsync();
         public ValueTask DisposeAsync() => ValueTask.CompletedTask;
@@ -26,7 +20,7 @@ namespace SistemaLeilao.IntegrationTests.Features.Bid
             // banco sempre limpo aqui
             var auction = new AuctionBuilder().Build();
             _fixture.Context.Auctions.Add(auction);
-            await _fixture.Context.SaveChangesAsync();
+            await _fixture.Context.SaveChangesAsync(TestContext.Current.CancellationToken);
 
             // ...
         }

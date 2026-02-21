@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.LoginUser;
 using SistemaLeilao.Core.Application.Features.Auth.Commands.RegisterUser;
+using SistemaLeilao.Core.Domain.Common;
+using SistemaLeilao.Core.Domain.Resources;
 using SistemaLeilao.Infrastructure.Indentity;
 using SistemaLeilao.IntegrationTests.Fixtures;
 using Xunit;
@@ -44,17 +46,17 @@ namespace SistemaLeilao.IntegrationTests.Features.Auth
             var password = "P@ssw0rd123!";
 
             var registerCommand = new RegisterUserCommand("Usuário Teste", email, password, false);
-            await _mediator.Send(registerCommand);
+            await _mediator.Send(registerCommand, TestContext.Current.CancellationToken);
 
             var loginCommand = new LoginUserCommand(email, password);
 
             // Act
-            var result = await _mediator.Send(loginCommand);
+            var result = await _mediator.Send(loginCommand, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeTrue();
             result.Data.Should().NotBeNullOrEmpty();
-            result.Message.Should().Be("Login realizado com sucesso!");
+            result.Message.Should().Be(new SuccessMessage(nameof(Messages.SuccessLoginSuccessful), Messages.SuccessLoginSuccessful));
         }
 
         [Fact]
@@ -64,11 +66,11 @@ namespace SistemaLeilao.IntegrationTests.Features.Auth
             var command = new LoginUserCommand("naoexiste@example.com", "P@ssw0rd123!");
 
             // Act
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Errors.Should().Contain("E-mail ou senha incorretos.");
+            result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorInvalidEmailOrPassword), Messages.ErrorInvalidEmailOrPassword));
         }
 
         [Fact]
@@ -80,24 +82,24 @@ namespace SistemaLeilao.IntegrationTests.Features.Auth
             var wrongPassword = "WrongP@ss123!";
 
             var registerCommand = new RegisterUserCommand("Usuário", email, correctPassword, false);
-            await _mediator.Send(registerCommand);
+            await _mediator.Send(registerCommand, TestContext.Current.CancellationToken);
 
             var loginCommand = new LoginUserCommand(email, wrongPassword);
 
             // Act
-            var result = await _mediator.Send(loginCommand);
+            var result = await _mediator.Send(loginCommand, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeFalse();
-            result.Errors.Should().Contain("E-mail ou senha incorretos.");
+            result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorInvalidEmailOrPassword), Messages.ErrorInvalidEmailOrPassword));
         }
 
-        public async Task InitializeAsync()
+        internal async Task InitializeAsync()
         {
             await _fixture.InitializeAsync();
         }
 
-        public async Task DisposeAsync()
+        internal async Task DisposeAsync()
         {
             await _fixture.ResetAsync();
         }

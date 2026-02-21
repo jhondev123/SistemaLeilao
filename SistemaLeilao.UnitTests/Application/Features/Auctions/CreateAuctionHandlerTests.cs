@@ -3,9 +3,11 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Core.Domain.Entities;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Core.Domain.Resources;
 using SistemaLeilao.Tests.Common.Builders;
 using System;
 using System.Threading;
@@ -57,7 +59,7 @@ public class CreateAuctionHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().ContainSingle(error => error == "Leiloeiro não encontrado.");
+        result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorAuctioneerNotFound), Messages.ErrorAuctioneerNotFound));
         auctionRepositoryMock.Verify(repository => repository.Add(It.IsAny<Auction>()), Times.Never);
         unitOfWorkMock.Verify(unitOfWork => unitOfWork.CommitAsync(It.IsAny<CancellationToken>()), Times.Never);
     }
@@ -89,8 +91,9 @@ public class CreateAuctionHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeTrue();
-        result.Message.Should().Be("Leilão criado com sucesso.");
-        result.Data.Should().NotBeNull();
+        result?.Message?.Message. Should().Be(Messages.SuccessAuctionCreated);
+        result?.Message?.Code.Should().Be(nameof(Messages.SuccessAuctionCreated));
+        result?.Data.Should().NotBeNull();
         auctionRepositoryMock.Verify(repository => repository.Add(
             It.Is<Auction>(auction => auction.Title == command.Title && auction.AuctioneerId == auctioneer.Id)), Times.Once);
     }
@@ -122,6 +125,6 @@ public class CreateAuctionHandlerTests
 
         // Assert
         result.IsSuccess.Should().BeFalse();
-        result.Errors.Should().ContainSingle(error => error == "Erro ao criar leilão.");
+        result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorOnCreateAuction), Messages.ErrorOnCreateAuction));
     }
 }

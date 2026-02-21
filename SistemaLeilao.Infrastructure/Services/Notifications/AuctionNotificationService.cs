@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using SistemaLeilao.Core.Application.Interfaces;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Infrastructure.Hubs;
 
 namespace SistemaLeilao.Infrastructure.Services.Notifications
@@ -13,7 +14,7 @@ namespace SistemaLeilao.Infrastructure.Services.Notifications
                 .SendAsync("NewBidReceived", new { auctionId, newPrice, bidderId });
         }
 
-        public async Task NotifyBidRejected(Guid bidderId, string message)
+        public async Task NotifyBidRejected(Guid bidderId, ErrorMessage message)
         {
             await hubContext.Clients.User(bidderId.ToString())
                     .SendAsync("BidRejected", message);

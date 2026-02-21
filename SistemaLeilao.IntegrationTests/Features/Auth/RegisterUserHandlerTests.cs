@@ -48,13 +48,13 @@ namespace SistemaLeilao.IntegrationTests.Features.Auth
             );
 
             // Act
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeTrue();
             result.Message.Should().Be("Usuário criado com sucesso!");
 
-            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email);
+            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken: TestContext.Current.CancellationToken);
             user.Should().NotBeNull();
             user!.Email.Should().Be(command.Email);
         }
@@ -71,12 +71,12 @@ namespace SistemaLeilao.IntegrationTests.Features.Auth
             );
 
             // Act
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeTrue();
 
-            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email);
+            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken: TestContext.Current.CancellationToken);
             user.Should().NotBeNull();
 
             var userManager = _serviceProvider.GetRequiredService<UserManager<User>>();
@@ -91,12 +91,12 @@ namespace SistemaLeilao.IntegrationTests.Features.Auth
             // Arrange
             var email = "duplicate@example.com";
             var firstCommand = new RegisterUserCommand("Usuário 1", email, "P@ssw0rd123!", false);
-            await _mediator.Send(firstCommand);
+            await _mediator.Send(firstCommand, TestContext.Current.CancellationToken);
 
             var secondCommand = new RegisterUserCommand("Usuário 2", email, "P@ssw0rd123!", false);
 
             // Act
-            var result = await _mediator.Send(secondCommand);
+            var result = await _mediator.Send(secondCommand, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeFalse();

@@ -1,8 +1,11 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Core.Domain.Entities;
 using SistemaLeilao.Core.Domain.Enums;
+using SistemaLeilao.Core.Domain.Resources;
 using SistemaLeilao.Tests.Common.Builders;
+using System;
+using System.Globalization;
 using Xunit;
 
 namespace SistemaLeilao.UnitTests.Domain.Entities
@@ -52,7 +55,8 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
 
             // Assert
             success.Should().BeFalse();
-            errorMessage.Should().Be("O leilão não está aberto para lances.");
+            errorMessage.Message.Should().Be(Messages.ErrorAuctionNotOpen);
+            errorMessage.Code.Should().Be(nameof(Messages.ErrorAuctionNotOpen));
         }
 
         [Fact]
@@ -70,7 +74,8 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
 
             // Assert
             success.Should().BeFalse();
-            errorMessage.Should().Be("O leilão já terminou.");
+            errorMessage.Message.Should().Be(Messages.ErrorAuctionEnded);
+            errorMessage.Code.Should().Be(nameof(Messages.ErrorAuctionEnded));
         }
 
         [Fact]
@@ -90,7 +95,9 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
 
             // Assert
             success.Should().BeFalse();
-            errorMessage.Should().Contain("O lance deve ser pelo menos");
+            string expectedValue = minimumIncrement.ToString("C", CultureInfo.CurrentUICulture);
+            errorMessage.Message.Should().Contain(expectedValue);
+            errorMessage.Code.Should().Be(nameof(Messages.ErrorBidTooLow));
         }
 
         [Fact]
@@ -111,7 +118,8 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
 
             // Assert
             success.Should().BeTrue();
-            errorMessage.Should().BeEmpty();
+            errorMessage.Message.Should().BeEmpty();
+            errorMessage.Code.Should().BeEmpty();
         }
 
         [Fact]
@@ -129,7 +137,8 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
 
             // Assert
             success.Should().BeTrue();
-            errorMessage.Should().BeEmpty();
+            errorMessage.Message.Should().BeEmpty();
+            errorMessage.Code.Should().BeEmpty();
             auction.CurrentPrice.Should().Be(newPrice);
             auction.BidderWinnerId.Should().Be(bidderId);
         }
@@ -149,7 +158,8 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
 
             // Assert
             success.Should().BeFalse();
-            errorMessage.Should().NotBeEmpty();
+            errorMessage.Message.Should().Be(Messages.ErrorAuctionNotOpen);
+            errorMessage.Code.Should().Be(nameof(Messages.ErrorAuctionNotOpen));
             auction.CurrentPrice.Should().Be(originalPrice);
             auction.BidderWinnerId.Should().BeNull();
         }

@@ -7,9 +7,11 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using SistemaLeilao.Core.Application.Common.Extensions;
 using SistemaLeilao.Core.Application.Features.Admin.Commands.CreateUser;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Core.Domain.Enums;
 using SistemaLeilao.Core.Domain.Interfaces;
 using SistemaLeilao.Core.Domain.Interfaces.Repositories;
+using SistemaLeilao.Core.Domain.Resources;
 using SistemaLeilao.Infrastructure.Indentity;
 using SistemaLeilao.Infrastructure.Persistence.Repositories;
 using SistemaLeilao.IntegrationTests.Fixtures;
@@ -61,16 +63,16 @@ namespace SistemaLeilao.IntegrationTests.Features.Admin
             );
 
             // Act
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeTrue();
             result.Message.Should().Be("Usuário criado com sucesso!");
 
-            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email);
+            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken: TestContext.Current.CancellationToken);
             user.Should().NotBeNull();
 
-            var auctioneer = await _fixture.Context.Auctioneers.FirstOrDefaultAsync(a => a.Email == command.Email);
+            var auctioneer = await _fixture.Context.Auctioneers.FirstOrDefaultAsync(a => a.Email == command.Email, cancellationToken: TestContext.Current.CancellationToken);
             auctioneer.Should().NotBeNull();
             auctioneer!.Name.Should().Be(command.Name);
             auctioneer.Id.Should().Be(user!.Id);
@@ -88,15 +90,15 @@ namespace SistemaLeilao.IntegrationTests.Features.Admin
             );
 
             // Act
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeTrue();
 
-            var user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email);
+            User? user = await _fixture.Context.Users.FirstOrDefaultAsync(u => u.Email == command.Email, cancellationToken: TestContext.Current.CancellationToken);
             user.Should().NotBeNull();
 
-            var bidder = await _fixture.Context.Bidders.FirstOrDefaultAsync(b => b.Id == user!.Id);
+            var bidder = await _fixture.Context.Bidders.FirstOrDefaultAsync(b => b.Id == user!.Id, cancellationToken: TestContext.Current.CancellationToken);
             bidder.Should().NotBeNull();
             bidder!.PerfilName.Should().Be(command.Name);
             bidder.Id.Should().Be(user!.Id);
@@ -114,20 +116,21 @@ namespace SistemaLeilao.IntegrationTests.Features.Admin
             );
 
             // Act
-            var result = await _mediator.Send(command);
+            var result = await _mediator.Send(command, TestContext.Current.CancellationToken);
 
             // Assert
             result.IsSuccess.Should().BeFalse();
             result.Errors.Should().NotBeEmpty();
+            result.Errors.Should().Contain(new ErrorMessage(nameof(Messages.ErrorInvalidEmailOrPassword), Messages.ErrorInvalidEmailOrPassword));
         }
-        ValueTask IAsyncLifetime.InitializeAsync()
+        public async ValueTask InitializeAsync()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
         }
 
-        ValueTask IAsyncDisposable.DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            throw new NotImplementedException();
+            await Task.CompletedTask;
         }
     }
 }
