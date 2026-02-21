@@ -17,7 +17,7 @@ namespace SistemaLeilao.IntegrationTests.Fixtures
 
         public DatabaseFixture()
         {
-            _container = new PostgreSqlBuilder()
+            _container = new PostgreSqlBuilder("postgres:15.1")
                 .WithDatabase("sistemaLeilao_tests")
                 .WithUsername("postgres")
                 .WithPassword("postgres")

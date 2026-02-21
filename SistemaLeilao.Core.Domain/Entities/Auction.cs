@@ -1,5 +1,8 @@
-﻿using SistemaLeilao.Core.Domain.Entities.Common;
+﻿using SistemaLeilao.Core.Domain.Common;
+using SistemaLeilao.Core.Domain.Entities.Common;
 using SistemaLeilao.Core.Domain.Enums;
+using SistemaLeilao.Core.Domain.Resources;
+using System.Globalization;
 
 namespace SistemaLeilao.Core.Domain.Entities
 {
@@ -50,25 +53,26 @@ namespace SistemaLeilao.Core.Domain.Entities
             Status = status;
         }
 
-        public (bool success, string errorMessage) CanPlaceBid(decimal bidAmount)
+        public (bool success, ErrorMessage error) CanPlaceBid(decimal bidAmount)
         {
             if (Status != AuctionStatus.OPEN)
             {
-                return (false, "O leilão não está aberto para lances.");
+                return (false, new ErrorMessage(nameof(Messages.ErrorAuctionNotOpen),Messages.ErrorAuctionNotOpen));
             }
 
             if (DateTime.UtcNow > EndDate)
             {
-                return (false, "O leilão já terminou.");
+                return (false, new ErrorMessage(nameof(Messages.ErrorAuctionEnded),Messages.ErrorAuctionEnded));
             }
             if(bidAmount < (CurrentPrice + MinimumIncrement))
             {
-                return (false, $"O lance deve ser pelo menos {MinimumIncrement:C} maior que o preço atual.");
+                string errorMessage = string.Format(Messages.ErrorBidTooLow, MinimumIncrement.ToString("C", CultureInfo.CurrentUICulture));
+                return (false, new ErrorMessage(nameof(Messages.ErrorBidTooLow), errorMessage));
             }
-            return (true, string.Empty);
+            return (true, ErrorMessage.None);
         }
 
-        public (bool success, string errorMessage) ApplyNewBid(decimal newPrice, long bidderId)
+        public (bool success, ErrorMessage errorMessage) ApplyNewBid(decimal newPrice, long bidderId)
         {
             var (canPlace, error) = CanPlaceBid(newPrice);
 
@@ -79,7 +83,7 @@ namespace SistemaLeilao.Core.Domain.Entities
             CurrentPrice = newPrice;
             BidderWinnerId = bidderId;
 
-            return (true, string.Empty);
+            return (true, ErrorMessage.None);
         }
     }
 }

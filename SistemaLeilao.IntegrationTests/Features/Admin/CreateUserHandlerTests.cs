@@ -39,9 +39,8 @@ namespace SistemaLeilao.IntegrationTests.Features.Admin
             services.AddScoped<Core.Application.Interfaces.IJwtTokenGeneratorService, Infrastructure.Services.JwtToken.JwtTokenGenerator>();
             services.AddScoped<IAuctioneerRepository, AuctioneerRepository>();
             services.AddScoped<IBidderRepository, BidderRepository>();
-            services.AddScoped<IUnitOfWork, Infrastructure.Persistence.Repositories.UnitOfWork>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            // --- AJUSTE AQUI: Substituindo Moq por NSubstitute ---
             services.AddScoped<ILogger<CreateUserHandler>>(sp => Substitute.For<ILogger<CreateUserHandler>>());
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(CreateUserHandler).Assembly));

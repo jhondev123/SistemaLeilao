@@ -1,5 +1,6 @@
 <Solution>
   <Folder Name="/Solution Items/">
+    <File Path=".github/copilot-instructions.md" />
     <File Path="docker-compose.yml" />
     <File Path="migration.ps1" />
     <File Path="readme.md" />

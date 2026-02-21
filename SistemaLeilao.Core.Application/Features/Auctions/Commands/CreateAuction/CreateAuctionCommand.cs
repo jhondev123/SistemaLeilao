@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using SistemaLeilao.Core.Application.Common;
 using SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction;
+using SistemaLeilao.Core.Domain.Common;
 using SistemaLeilao.Core.Domain.Entities;
 
 namespace SistemaLeilao.Core.Application.Features.Auctions.Commands.CreateAuction

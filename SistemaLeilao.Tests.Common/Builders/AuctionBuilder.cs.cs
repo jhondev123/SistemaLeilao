@@ -16,24 +16,59 @@ namespace SistemaLeilao.Tests.Common.Builders
         private DateTime _endDate = DateTime.UtcNow.AddHours(2);
         private AuctionStatus _status = AuctionStatus.OPEN;
         private long _auctioneerId = 1;
+        private Guid _externalId = Guid.NewGuid();
 
         public AuctionBuilder WithStatus(AuctionStatus status)
-        { _status = status; return this; }
+        {
+            _status = status;
+            return this;
+        }
 
         public AuctionBuilder WithEndDate(DateTime endDate)
-        { _endDate = endDate; return this; }
+        {
+            _endDate = endDate;
+            return this;
+        }
 
         public AuctionBuilder WithStartDate(DateTime startDate)
-        { _startDate = startDate; return this; }
+        {
+            _startDate = startDate;
+            return this;
+        }
 
         public AuctionBuilder WithCurrentPrice(decimal price)
-        { _currentPrice = price; return this; }
+        {
+            _currentPrice = price;
+            return this;
+        }
 
         public AuctionBuilder WithMinimumIncrement(decimal increment)
-        { _minimumIncrement = increment; return this; }
+        {
+            _minimumIncrement = increment;
+            return this;
+        }
 
-        public Auction Build() => new(
-            _title, _auctioneerId, _startingPrice, _currentPrice,
-            _startDate, _endDate, null, null, _minimumIncrement, _status);
+        public AuctionBuilder WithAuctioneerId(long auctioneerId)
+        {
+            _auctioneerId = auctioneerId;
+            return this;
+        }
+
+        public AuctionBuilder WithExternalId(Guid externalId)
+        {
+            _externalId = externalId;
+            return this;
+        }
+
+        public Auction Build()
+        {
+            Auction auction = new Auction(
+                _title, _auctioneerId, _startingPrice, _currentPrice,
+                _startDate, _endDate, null, null, _minimumIncrement, _status);
+
+            auction.ExternalId = _externalId;
+
+            return auction;
+        }
     }
 }

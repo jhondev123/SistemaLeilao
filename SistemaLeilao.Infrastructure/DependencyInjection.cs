@@ -58,6 +58,8 @@ namespace SistemaLeilao.Infrastructure
 
             ConfigureDomainServices(services);
 
+            ConfigureInternalization(services);
+
             return services;
         }
         private static void ConfigureIdentity(IServiceCollection services)
@@ -212,6 +214,10 @@ namespace SistemaLeilao.Infrastructure
         private static void ConfigureDomainServices(IServiceCollection services)
         {
             services.AddScoped<BidDomainService>();
+        }
+        private static void ConfigureInternalization(IServiceCollection services)
+        {
+            services.AddLocalization();
         }
     }
 }

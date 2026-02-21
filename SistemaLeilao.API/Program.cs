@@ -38,6 +38,15 @@ try
     // HealthCheck ou Global Exception Handler (se necessário)
     app.UseExceptionHandler();
 
+    // internalization config
+    var supportedCultures = new[] { "pt-BR", "en-US" };
+    var localizationOptions = new RequestLocalizationOptions()
+        .SetDefaultCulture("pt-BR")
+        .AddSupportedCultures(supportedCultures)
+        .AddSupportedUICultures(supportedCultures);
+
+    app.UseRequestLocalization(localizationOptions);
+
     // Endpoints
     app.MapAuctionEndpoints();
     app.MapBidEndpoints();
