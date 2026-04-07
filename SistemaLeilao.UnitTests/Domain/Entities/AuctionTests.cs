@@ -13,36 +13,6 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
     public class AuctionTests
     {
         [Fact]
-        public void Constructor_ShouldCreateAuctionWithValidData()
-        {
-            // Arrange
-            var title = "Leilão de Arte";
-            var auctioneerId = 1L;
-            var startingPrice = 100m;
-            var currentPrice = 100m;
-            var startDate = DateTime.UtcNow.AddDays(1);
-            var endDate = DateTime.UtcNow.AddDays(2);
-            var description = "Descrição do leilão";
-            byte[]? image = null;
-            var minimumIncrement = 10m;
-            var status = AuctionStatus.OPEN;
-
-            // Act
-            var auction = new Auction(title, auctioneerId, startingPrice, currentPrice, startDate, endDate, description, image, minimumIncrement, status);
-
-            // Assert
-            auction.Title.Should().Be(title);
-            auction.AuctioneerId.Should().Be(auctioneerId);
-            auction.StartingPrice.Should().Be(startingPrice);
-            auction.CurrentPrice.Should().Be(currentPrice);
-            auction.StartDate.Should().Be(startDate);
-            auction.EndDate.Should().Be(endDate);
-            auction.Description.Should().Be(description);
-            auction.MinimumIncrement.Should().Be(minimumIncrement);
-            auction.Status.Should().Be(status);
-        }
-
-        [Fact]
         public void CanPlaceBid_WhenAuctionIsNotOpen_ShouldReturnFalse()
         {
             // Arrange

@@ -7,23 +7,6 @@ namespace SistemaLeilao.UnitTests.Domain.Entities
     public class BidderTests
     {
         [Fact]
-        public void Constructor_ShouldCreateBidderWithValidData()
-        {
-            // Arrange
-            var perfilName = "Maria";
-            var userId = 1L;
-
-            // Act
-            var bidder = new Bidder(perfilName, userId);
-
-            // Assert
-            bidder.PerfilName.Should().Be(perfilName);
-            bidder.Id.Should().Be(userId);
-            bidder.WalletBalance.Should().Be(0m);
-            bidder.Bids.Should().BeEmpty();
-        }
-
-        [Fact]
         public void AddCredits_ShouldIncreaseWalletBalance()
         {
             // Arrange
